@@ -1,0 +1,47 @@
+#search_results_div
+{
+}
+#search_header
+{
+	background: inherit;
+}
+#search_header input
+{
+	border-radius: 0px;
+	font-size: 20px;
+}
+#search_header button
+{
+	padding: 4px 15px;
+	font-size: 18px;
+}
+#search_results
+{
+	min-height: 700px;
+	padding: 10px 2px;
+}
+.result
+{
+	background: #fff;
+    margin: 15px 15px;
+    padding: 0px;
+    font-size: 16px;
+}
+.result_head
+{
+	font-size: 26px;
+    color: #335b6b;
+    padding: 5px 15px;
+}
+.result_desc
+{
+	padding: 10px 15px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    text-align: justify;
+    text-justify: inter-word;
+}
+#footer
+{
+	padding-top: 30px;
+}

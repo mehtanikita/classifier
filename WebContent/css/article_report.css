@@ -1,0 +1,18 @@
+#analysis_div
+{
+	background: #fff;
+    padding: 0px;
+    font-size: 16px;
+}
+#analysis_head
+{
+	font-size: 30px;
+    color: #335b6b;
+    padding: 5px 15px;
+    text-align: center;
+}
+#analysis_body
+{
+	border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}

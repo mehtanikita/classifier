@@ -1,0 +1,22 @@
+#text_area
+{
+	padding: 15px;
+	font-size: 18px;
+	border-radius: 0px;
+}
+#upload_file_div
+{
+	background: #fff;
+	border: 2px solid black;
+	height: 150px;
+	cursor: pointer;
+}
+#upload_file_div h1
+{
+	text-align: center;
+	margin-top: 3.5%;
+}
+#file_upload
+{
+	display: none;
+}
