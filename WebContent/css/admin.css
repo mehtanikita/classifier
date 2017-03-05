@@ -1,0 +1,122 @@
+*
+{
+	box-sizing: border-box;
+	outline: none !important;
+}
+:focus, :active
+{
+	outline: none !important;
+}
+a, a:hover
+{
+	text-decoration: none;
+}
+img
+{
+	cursor: pointer;
+}
+select
+{
+	cursor: pointer;
+}
+body
+{
+
+}
+.pointer
+{
+	cursor: pointer;
+}
+.black
+{
+	color: black;
+}
+.fleft
+{
+	float: left;
+}
+.thumbnail
+{
+	width: 100%;
+	height: 75%;
+}
+.small_thumbnail
+{
+	width: 60px;
+	height: 60px;
+}
+.search_thumbnail
+{
+	width: 45px;
+	height: 45px;
+}
+.listing_thumbnail
+{
+	width: 80%;
+	height: 50%;
+}
+.btn-orange
+{
+	background: #f4511e;
+	color: white;
+}
+.btn-orange:hover
+{
+	background: white;
+	color: #f4511e;
+	border: 1px solid #f4511e;
+}
+.lr0pad
+{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+input::-webkit-calendar-picker-indicator
+{
+	display: none;
+}
+input:-webkit-autofill
+{
+    -webkit-box-shadow: 0 0 0px 1000px #f3f3f3 inset !important;
+    -webkit-text-fill-color: black !important;
+}
+.hide
+{
+	display: none;
+}
+.vcenter
+{
+	display: inline-block;
+	vertical-align: middle;
+	float: none;
+}
+.remove_from_wishlist
+{
+	background: #ff9933;
+}
+.remove_from_wishlist:focus, .remove_from_wishlist:hover
+{
+	background: #e67300;
+}
+.border_top_1p
+{
+	border-top: 1px solid #ccc;
+}
+.border_bot_1p
+{
+	border-bottom: 1px solid #ccc;
+}
+.tip_danger + .tooltip > .tooltip-inner{background-color: #d9534f;}
+.tip_danger + .tooltip > .tooltip-arrow { border-bottom-color:#d9534f; }
+
+.tip_warning + .tooltip > .tooltip-inner{background-color: #f0ad4e;}
+.tip_warning + .tooltip > .tooltip-arrow { border-bottom-color:#f0ad4e; }
+
+.tip_info + .tooltip > .tooltip-inner{background-color: #5bc0de;}
+.tip_info + .tooltip > .tooltip-arrow { border-bottom-color:#5bc0de; }
+
+.tip_primary + .tooltip > .tooltip-inner{background-color: #337ab7;}
+.tip_primary + .tooltip > .tooltip-arrow { border-bottom-color:#337ab7; }
+
+.tip_success + .tooltip > .tooltip-inner{background-color: #5cb85c;}
+.tip_success + .tooltip > .tooltip-arrow { border-bottom-color:#5cb85c; }
