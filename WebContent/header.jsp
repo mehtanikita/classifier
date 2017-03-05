@@ -12,4 +12,5 @@
 	<script src="js/general.js" type="text/javascript"></script>
 </head>
 <body>
-	<h1>In Header</h1>
+	<div class="container">
+	<h1></h1>
