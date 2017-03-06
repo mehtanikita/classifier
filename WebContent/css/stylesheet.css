@@ -182,6 +182,7 @@ hr
 	padding: 10px;
 	font-weight: normal;
 	min-height: 500px;
+	overflow: auto;
 }
 #footer
 {

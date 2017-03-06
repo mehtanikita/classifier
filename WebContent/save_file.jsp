@@ -70,7 +70,7 @@
 	}
 	
 	//Save file
-	/* try {
+	try {
 		File file_2 = new File(fpath);
 		FileWriter fileWriter = new FileWriter(file_2);
 		fileWriter.write(txt);
@@ -78,7 +78,7 @@
 		fileWriter.close(); 
 	}
 	catch (IOException e)
-	{ e.printStackTrace(); } */
+	{ e.printStackTrace(); } 
 	
 	//Algo
 	int max_id = 0;
@@ -178,41 +178,6 @@
 		DecimalFormat df = new DecimalFormat("#.##");
 		df.setRoundingMode(RoundingMode.CEILING);
 		Double percent;
-		for(Map.Entry m:score.entrySet())
-		{
-			tmp_id = (Integer)m.getKey();
-			tmp_score = (Integer)m.getValue();
-			if(total_score != 0)
-				percent = ((double)tmp_score/(double)total_score)*100;
-			else
-				percent = 0.00;
-			//out.println(category.get(tmp_id) + " : " + df.format(percent) + " %"+"<br/>");
-		}
-		Object[] a = hm1.entrySet().toArray();
-		Arrays.sort(a, new Comparator()
-		{
-		    public int compare(Object o1, Object o2)
-		    {
-		        return ((Map.Entry<String, Integer>) o2).getValue().compareTo(((Map.Entry<String, Integer>) o1).getValue());
-		    }
-		});
-		int count = 5;
-		for (Object e : a)
-		{
-			if(count>0)
-				tags += "'"+((Map.Entry<String, Integer>) e).getKey()+"',";
-			count--;
-		}
-	}
-	catch(Exception e)
-	{ System.out.println(e); }
-    
-	if(tags.length() > 0)
-	{
-		tags = tags.substring(0, tags.length()-1);
-		tags.replaceAll("\'","\\\\'");
-	}
-	//stmt.executeUpdate("INSERT into articles VALUES ("+id+",'"+name+"',"+max_id+",\""+tags+"\")");
 %>
 <div id="main_div">
 	<link href="css/article_report.css" rel="stylesheet" type="text/css"/>
@@ -221,17 +186,86 @@
 			Article Analysis
 		</div>
 		<div id="analysis_body">
-			
+			<h3 class="text-center">Classified as <%= category.get(max_id) %> article.</h3>
+			<%
+				String cls = "";
+				for(Map.Entry m:score.entrySet())
+				{
+					tmp_id = (Integer)m.getKey();
+					tmp_score = (Integer)m.getValue();
+					if(total_score != 0)
+						percent = ((double)tmp_score/(double)total_score)*100;
+					else
+						percent = 0.00;
+					//out.println(category.get(tmp_id) + " : " + df.format(percent) + " %"+"<br/>");
+					if(percent > 80)
+						cls = "success";
+					else if(percent > 60)
+						cls = "primary";
+					else if(percent > 40)
+						cls = "info";
+					else if(percent > 20)
+						cls = "warning";
+					else
+						cls = "danger";
+				%>
+					<div class="col-md-12">
+						<div class="col-md-4">
+							<h3><%= category.get(tmp_id) %>: </h3> 
+						</div>
+						<div class="col-md-6">
+							<div class="progress progress_tip tip_<%= cls%> pointer" data-toggle="tooltip" data-placement="bottom" title="<%= df.format(percent) + '%'%>" style="width: 90%; margin-top: 25px">
+								<div class="progress-bar progress-bar-<%= cls%> text-center" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" wid="<%= df.format(percent)%>">
+								</div>
+							</div>
+						</div>
+					</div>
+				<%
+				}
+			%>
 		</div>
 	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function()
 	{
-		$(".anim").each(function()
+		$(".progress-bar").each(function()
 		{
-			
+			$(this).animate({width : $(this).attr('wid')+'%'},200);
 		});
 	});
 </script>
+<%
+		Object[] a = hm1.entrySet().toArray();
+		Arrays.sort(a, new Comparator()
+		{
+		    public int compare(Object o1, Object o2)
+		    {
+		        return ((Map.Entry<String, Integer>) o2).getValue().compareTo(((Map.Entry<String, Integer>) o1).getValue());
+		    }
+		});
+		int count = 5,mcnt=0;
+		String tag = "";
+		for (Object e : a)
+		{
+			if(count>0)
+			{
+				tag = ((Map.Entry<String, Integer>) e).getKey();
+				mcnt = ((Map.Entry<String, Integer>) e).getValue();
+				tags += "'"+tag+"',";
+				stmt.executeUpdate("INSERT into tags VALUES ('','"+tag+"',"+id+",'"+mcnt+"')");
+			}
+				
+			count--;
+		}
+		if(tags.length() > 0)
+		{
+			tags = tags.substring(0, tags.length()-1);
+			tags.replaceAll("\'","\\\\'");
+		}
+		stmt.executeUpdate("INSERT into articles VALUES ("+id+",'"+name+"',"+max_id+",\""+tags+"\")");	
+	}
+	catch(Exception e)
+	{ System.out.println(e); }
+%>
 <%@include file="footer.jsp" %>
