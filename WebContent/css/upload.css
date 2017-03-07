@@ -1,8 +1,13 @@
-#text_area
+#text_area, #title_text
 {
 	padding: 15px;
 	font-size: 18px;
 	border-radius: 0px;
+	margin-bottom: 10px;
+}
+button
+{
+	font-size: 16px !important;
 }
 #upload_file_div
 {

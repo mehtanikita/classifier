@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="java.io.*, java.sql.*, java.util.*, java.lang.*, java.text.DecimalFormat, java.math.*, controller.WordDetails" %>
-<%@ page import="javax.servlet.*, javax.servlet.http.*" %>
+<%@ page import="java.io.*, java.util.*, java.lang.*, java.text.DecimalFormat, java.math.*, controller.WordDetails" %>
 <%@ page import="org.apache.commons.fileupload.*" %>
 <%@ page import="org.apache.commons.fileupload.disk.*" %>
 <%@ page import="org.apache.commons.fileupload.servlet.*" %>
@@ -9,11 +8,8 @@
 <%@include file="header.jsp" %>
 <% 
 	int count_weight = 50;		//Weight of number of words in deciding category
-	int frequency_weight = 250;	//Weight of frequency of words in deciding category
+	int frequency_weight = 50;	//Weight of frequency of words in deciding category
 	
-	Class.forName("com.mysql.jdbc.Driver");
-	Connection c = DriverManager.getConnection("jdbc:mysql://localhost/test","root","");
-	Statement stmt = c.createStatement();
 	ResultSet r = stmt.executeQuery("SELECT MAX(id) AS m_id FROM articles");
 	
 	int m_id = 0;
@@ -23,11 +19,13 @@
 	
 	String txt = "";
 	String type = request.getParameter("type");
+	String title = "";
 	String path = System.getProperty("user.dir");
 	String name = "Article_"+id+".txt";
 	String fpath = path + "/" + name;
 	String tags = "";
-	
+	String s_tags = "";
+	int total_words = 0, total_freq = 0;
 	//Get text
 	File file ;
 	int maxFileSize = 5000 * 1024;
@@ -49,6 +47,7 @@
 	      while ( i.hasNext () ) 
 	      {
 	         FileItem fi = (FileItem)i.next();
+	         title = fi.getName();
 	         if ( !fi.isFormField () )	
 	         {
 	        	 BufferedInputStream buff=new BufferedInputStream(fi.getInputStream());
@@ -63,12 +62,15 @@
 	}
 	else if(type.equals("text"))
 	{
+		title = (String)request.getParameter("title");
 		txt = (String)request.getParameter("file_text");
 	}
 	else{
 	   response.sendRedirect("upload.jsp");
 	}
-	
+	if (title.indexOf(".") > 0)
+		title = title.substring(0, title.lastIndexOf("."));
+		
 	//Save file
 	try {
 		File file_2 = new File(fpath);
@@ -141,7 +143,7 @@
 			for(Map.Entry m:hm.entrySet())
 			{
 				wd = (WordDetails)m.getValue();
-				//System.out.println(m.getKey()+" : Category_ID = "+wd.cat_id+" : Word_Count = "+wd.cnt);
+				System.out.println(m.getKey()+" : Category_ID = "+wd.cat_id+" : Word_Count = "+wd.cnt);
 				if(wd.cnt > 0)
 				{
 					tmp_id = wd.cat_id;
@@ -151,20 +153,24 @@
 					f_cnt += wd.cnt;
 					word_cnt.put(tmp_id,w_cnt);
 					freq_cnt.put(tmp_id,f_cnt);
-					
+
 					hm1.put((String) m.getKey(), wd.cnt);
+	
+					total_words++;
+					total_freq += wd.cnt;
 				}
 			}
 		}
 		
 		int max_score = 0;
 		int tmp_score, total_score = 0;
+		float max_percent = 0;
 		for(Map.Entry m:score.entrySet())
 		{
 			tmp_id = (Integer)m.getKey();
 			w_cnt = word_cnt.get(tmp_id);
 			f_cnt = freq_cnt.get(tmp_id);
-			tmp_score = (count_weight * w_cnt) + (frequency_weight * f_cnt);
+			tmp_score = (count_weight * (w_cnt*100/total_words)) + (frequency_weight * (f_cnt*100/total_freq));
 			score.put(tmp_id, tmp_score);
 			total_score += tmp_score;
 			if(tmp_score > max_score)
@@ -174,7 +180,7 @@
 			}
 		}
 		//out.println("The article belongs to category: " + category.get(max_id)+"<br/>");
-		
+		max_percent = (float)max_score*100/total_score;
 		DecimalFormat df = new DecimalFormat("#.##");
 		df.setRoundingMode(RoundingMode.CEILING);
 		Double percent;
@@ -186,28 +192,38 @@
 			Article Analysis
 		</div>
 		<div id="analysis_body">
-			<h3 class="text-center">Classified as <%= category.get(max_id) %> article.</h3>
+			<h3 class="text-center">Classified as "<%= category.get(max_id) %>" article.</h3>
 			<%
 				String cls = "";
+				String cats = "";
+				String scores ="";
+				int cat_cnt = 0;
+				String others = "";
 				for(Map.Entry m:score.entrySet())
 				{
 					tmp_id = (Integer)m.getKey();
 					tmp_score = (Integer)m.getValue();
 					if(total_score != 0)
+					{
 						percent = ((double)tmp_score/(double)total_score)*100;
-					else
-						percent = 0.00;
-					//out.println(category.get(tmp_id) + " : " + df.format(percent) + " %"+"<br/>");
-					if(percent > 80)
-						cls = "success";
-					else if(percent > 60)
-						cls = "primary";
-					else if(percent > 40)
-						cls = "info";
-					else if(percent > 20)
-						cls = "warning";
-					else
-						cls = "danger";
+						if(tmp_score > 0)
+						{
+							if(!df.format(percent).equals(df.format(max_percent)))
+								others += tmp_id+":"+df.format(percent)+",";
+							cats += "'" + category.get(tmp_id) + "',";
+							scores += df.format(percent) + ",";
+							cat_cnt++;
+							if(percent > 80)
+								cls = "success";
+							else if(percent > 60)
+								cls = "primary";
+							else if(percent > 40)
+								cls = "info";
+							else if(percent > 20)
+								cls = "warning";
+							else
+								cls = "danger";
+					
 				%>
 					<div class="col-md-12">
 						<div class="col-md-4">
@@ -221,51 +237,131 @@
 						</div>
 					</div>
 				<%
+					
+						}
+					}
+					else
+						percent = 0.00;
+					//out.println(category.get(tmp_id) + " : " + df.format(percent) + " %"+"<br/>");
 				}
+				others = others.substring(0,others.length()-1);
 			%>
+			<%
+			if(cats.length() > 0)
+			{
+				cats = cats.substring(0, cats.length()-1);
+				cats.replaceAll("\'","\\\\'");
+				scores = scores.substring(0, scores.length()-1);
+			}
+			%>
+		</div>
+		<div id="analysis_body">
+			<script type="text/javascript" src="js/chart.js"></script>
+			<canvas id="myChart" width="500" height="200"></canvas>
+			<script>
+				var colors = ['rgba(54, 162, 235, 0.4)', 'rgba(255, 206, 86, 0.4)', 'rgba(255, 99, 132, 0.4)',
+				                'rgba(75, 192, 192, 0.4)', 'rgba(153, 102, 255, 0.4)', 'rgba(255, 159, 64, 0.4)']
+				var ctx = document.getElementById("myChart");
+				var config = {
+					    type: 'pie',
+					    data: {
+					        labels: [<%= cats%>],
+					        datasets: [{
+					            label: 'Percentage Score',
+					            data: [<%= scores%>],
+					            backgroundColor: [
+					              <%  
+					              for(int p=0; p<cat_cnt; p++)
+					              {
+					            	out.println("colors["+(p%6)+"],");
+					              }
+					              %> 
+					            ],
+					            borderColor: [
+								<%  
+					              for(int p=0; p<cat_cnt; p++)
+					              {
+					            	out.println("colors["+(p%6)+"],");
+					              }
+					              %> 
+					            ],
+					            borderWidth: 1,
+					            /*barThickness: 30*/
+					        }]
+					    },
+					    options: {
+					        /* scales: {
+					        	xAxes:[{
+					        		barThickness: 30
+					        	}],
+					            yAxes: [{
+					                ticks: {
+					                    beginAtZero:true
+					                }
+					            }],
+					            
+					        } */
+					    }
+					};
+				var temp = jQuery.extend(true, {}, config);
+				var myChart = new Chart(ctx, temp);
+			</script>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function()
+			{
+				$(".progress-bar").each(function()
+				{
+					$(this).animate({width : $(this).attr('wid')+'%'},200);
+				});
+			});
+		</script>
+		<div id="analysis_body">
+		<h3 class="text-center"><u>Popular Tags</u></h3>
+		<div id="tags_div">
+		<%
+			Object[] a = hm1.entrySet().toArray();
+			Arrays.sort(a, new Comparator()
+			{
+			    public int compare(Object o1, Object o2)
+			    {
+			        return ((Map.Entry<String, Integer>) o2).getValue().compareTo(((Map.Entry<String, Integer>) o1).getValue());
+			    }
+			});
+			int count = 5,mcnt=0;
+			String tag = "";
+			String[] classes = {"success","primary","danger","info","warning"};
+			for (Object e : a)
+			{
+				if(count>0)
+				{
+					tag = ((Map.Entry<String, Integer>) e).getKey();
+					mcnt = ((Map.Entry<String, Integer>) e).getValue();
+					tags += "'"+tag+"',";
+					s_tags += tag+","; 
+					stmt.executeUpdate("INSERT into tags VALUES ('','"+tag+"',"+id+",'"+mcnt+"')");
+				%>
+					<a href="explore_tags.jsp?t=<%=tag%>" target="_blank" title="Explore">
+						<span class="label label-<%= classes[count%5]%>"><%=tag%> <span class="badge"><%=mcnt %></span></span>
+					</a>
+				<%
+				}
+					
+				count--;
+			}
+			if(tags.length() > 0)
+			{
+				tags = tags.substring(0, tags.length()-1);
+				tags.replaceAll("\'","\\\\'");
+				s_tags = s_tags.substring(0, s_tags.length()-1);
+			}
+			//stmt.executeUpdate("INSERT into articles VALUES ("+id+",'"+title+"','"+name+"',"+max_id+",'"+df.format(max_percent)+"','0','0',\""+tags+"\",'"+s_tags+"','"+others+"')");
+		}
+		catch(Exception e)
+		{ System.out.println(e); }
+		%>
+		</div>
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
-	$(document).ready(function()
-	{
-		$(".progress-bar").each(function()
-		{
-			$(this).animate({width : $(this).attr('wid')+'%'},200);
-		});
-	});
-</script>
-<%
-		Object[] a = hm1.entrySet().toArray();
-		Arrays.sort(a, new Comparator()
-		{
-		    public int compare(Object o1, Object o2)
-		    {
-		        return ((Map.Entry<String, Integer>) o2).getValue().compareTo(((Map.Entry<String, Integer>) o1).getValue());
-		    }
-		});
-		int count = 5,mcnt=0;
-		String tag = "";
-		for (Object e : a)
-		{
-			if(count>0)
-			{
-				tag = ((Map.Entry<String, Integer>) e).getKey();
-				mcnt = ((Map.Entry<String, Integer>) e).getValue();
-				tags += "'"+tag+"',";
-				stmt.executeUpdate("INSERT into tags VALUES ('','"+tag+"',"+id+",'"+mcnt+"')");
-			}
-				
-			count--;
-		}
-		if(tags.length() > 0)
-		{
-			tags = tags.substring(0, tags.length()-1);
-			tags.replaceAll("\'","\\\\'");
-		}
-		stmt.executeUpdate("INSERT into articles VALUES ("+id+",'"+name+"',"+max_id+",\""+tags+"\")");	
-	}
-	catch(Exception e)
-	{ System.out.println(e); }
-%>
 <%@include file="footer.jsp" %>

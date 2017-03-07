@@ -4,20 +4,24 @@
 	<link href="css/upload.css" rel="stylesheet" type="text/css"/>
 	<div id="main_div">
 		<form action="save_file.jsp" method="POST">
+			<input type="text" name="title" id="title_text" class="form-control" placeholder="Article Title" required oninvalid='this.setCustomValidity("Please enter title")' oninput='this.setCustomValidity("")'/>
 			<textarea rows="10" cols="100" id="text_area" class="form-control" name="file_text" placeholder="Paste text here.." required oninvalid='this.setCustomValidity("Please enter some text")' oninput='this.setCustomValidity("")' ></textarea><br/>
 			<input type="hidden" name="type" value="text"/>
-			<button class="btn btn-default form-control">
+			<button class="btn btn-primary form-control">
+				<span class="glyphicon glyphicon-file"></span>
 				Insert Article
 			</button>
 		</form>
-		<hr/>
+		<br/><hr/>
+		<h3 class="text-center" style="margin-top: -28px; margin-bottom: 20px;">OR</h3>
 		<form action="save_file.jsp" method="POST" enctype="multipart/form-data">
 			<div id="upload_file_div">
 				<h1 id="file_name">Drop files here.</h1>
 				<input type="text" style="display: none" name="type" value="file"/>
-				<input type="file" id="file_upload" name="file" accept="application/msword,text/plain"/>
+				<input type="file" id="file_upload" name="file" accept="application/msword,text/plain" required/>
 			</div><br/>
-			<button class="btn btn-default form-control">
+			<button class="btn btn-success form-control">
+				<span class="glyphicon glyphicon-cloud-upload"></span>
 				Upload Article
 			</button>
 		</form>

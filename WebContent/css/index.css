@@ -54,7 +54,8 @@
 	margin: 0px;
 	cursor: pointer;
 	color: black;
-	text-align: left
+	text-align: left;
+	font-weight: 400;
 }
 .list_hover
 {
