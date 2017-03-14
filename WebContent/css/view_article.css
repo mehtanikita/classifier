@@ -1,4 +1,4 @@
-#article
+#article, #write_review
 {
 	background: #fff;
 }
@@ -28,4 +28,40 @@
 	font-size: 18px;
 	margin: 0px auto;
 	
+}
+#write_review
+{
+	padding: 15px 10px;
+	overflow: auto;
+}
+#all_reviews
+{
+	background: inherit;
+	padding: 0px;
+	overflow: auto;
+	border: 2px solid white;
+}
+#all_reviews_head
+{
+	background: #fff;
+	font-size: 30px;
+	font-weight: 500;
+	text-align: center;
+	padding: 10px 2px;
+}
+#sort_div
+{
+	background: #fff;
+	margin: 0px;
+}
+.user_review
+{
+	background: #fff;
+	box-shadow: -1px 1px 1px gray;
+	margin-top: 7px;
+}
+.knob_div
+{
+	margin-top: 2%;
+	margin-bottom: 2%;
 }

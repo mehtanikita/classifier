@@ -4,7 +4,7 @@
 	<link href="css/upload.css" rel="stylesheet" type="text/css"/>
 	<div id="main_div">
 		<form action="save_file.jsp" method="POST">
-			<input type="text" name="title" id="title_text" class="form-control" placeholder="Article Title" required oninvalid='this.setCustomValidity("Please enter title")' oninput='this.setCustomValidity("")'/>
+			<input type="text" name="title" id="title_text" class="form-control" placeholder="Article Title"/>
 			<textarea rows="10" cols="100" id="text_area" class="form-control" name="file_text" placeholder="Paste text here.." required oninvalid='this.setCustomValidity("Please enter some text")' oninput='this.setCustomValidity("")' ></textarea><br/>
 			<input type="hidden" name="type" value="text"/>
 			<button class="btn btn-primary form-control">

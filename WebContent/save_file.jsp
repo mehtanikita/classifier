@@ -1,15 +1,107 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="java.io.*, java.util.*, java.lang.*, java.text.DecimalFormat, java.math.*, controller.WordDetails" %>
+<%@ page import="java.net.*,java.io.*, java.util.*, java.lang.*, java.text.DecimalFormat, java.math.*, controller.WordDetails, com.jaunt.*" %>
 <%@ page import="org.apache.commons.fileupload.*" %>
 <%@ page import="org.apache.commons.fileupload.disk.*" %>
 <%@ page import="org.apache.commons.fileupload.servlet.*" %>
 <%@ page import="org.apache.commons.io.output.*" %>
 <%@include file="header.jsp" %>
+<%!
+public String get_title(String txt, int len)
+{
+	String USER_AGENT = "Mozilla/5.0";
+	String tmp_title = "";
+	try{
+		String text = URLEncoder.encode(txt, "UTF-8");
+		String url = "http://freesummarizer.com/";
+		
+		
+		URL obj = new URL(url);
+		HttpURLConnection  con = (HttpURLConnection ) obj.openConnection();
+
+		//add reuqest header
+		con.setRequestMethod("POST");
+		con.setRequestProperty("User-Agent", USER_AGENT);
+		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+
+		String urlParameters = "text="+text+"&maxsentences=1";
+
+		// Send post request
+		con.setDoOutput(true);
+		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+		wr.writeBytes(urlParameters);
+		wr.flush();
+		wr.close();
+
+		BufferedReader in = new BufferedReader(
+		        new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer resp = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			resp.append(inputLine);
+		}
+		in.close();
+
+		UserAgent userAgent = new UserAgent();
+		userAgent.openContent(resp.toString());
+		tmp_title = userAgent.doc.findFirst("<div class=summary2>").findFirst("<p>").getText().replaceAll("[^\\x00-\\x7F]", "");
+		
+		if(tmp_title.length() > len)
+		{
+			if(tmp_title.indexOf('.') > len)
+			{
+				if(tmp_title.indexOf('?') > len)
+				{
+					if(tmp_title.indexOf('!') > len)
+					{
+						if(tmp_title.indexOf(',') > len)
+						{
+							tmp_title = tmp_title.substring(0,tmp_title.substring(0,len).lastIndexOf(' '));
+						}
+						else
+						{
+							if((tmp_title.indexOf(',') > 0))
+								tmp_title = tmp_title.substring(0,tmp_title.indexOf(','));
+							else
+								tmp_title = tmp_title.substring(0,tmp_title.substring(0,len).lastIndexOf(' '));
+						}
+					}
+					else
+					{
+						if((tmp_title.indexOf('!') > 0))
+							tmp_title = tmp_title.substring(0,tmp_title.indexOf('!'));
+						else
+							tmp_title = tmp_title.substring(0,tmp_title.substring(0,len).lastIndexOf(' '));
+					}
+				}
+				else
+				{
+					if((tmp_title.indexOf('?') > 0))
+						tmp_title = tmp_title.substring(0,tmp_title.indexOf('?'));
+					else
+						tmp_title = tmp_title.substring(0,tmp_title.substring(0,len).lastIndexOf(' '));
+				}
+			}
+			else
+			{
+				if((tmp_title.indexOf('.') > 0))
+					tmp_title = tmp_title.substring(0,tmp_title.indexOf('.'));
+				else
+					tmp_title = tmp_title.substring(0,tmp_title.substring(0,len).lastIndexOf(' '));
+			}
+		}
+		tmp_title = tmp_title.replaceAll("[^\\w\\s]+", "");
+	}
+	catch(Exception e){}
+	return tmp_title;
+}
+
+%>
 <% 
 	int count_weight = 50;		//Weight of number of words in deciding category
 	int frequency_weight = 50;	//Weight of frequency of words in deciding category
-	
+	int title_length = 100;
 	ResultSet r = stmt.executeQuery("SELECT MAX(id) AS m_id FROM articles");
 	
 	int m_id = 0;
@@ -54,6 +146,7 @@
                  byte []bytes=new byte[buff.available()];
                  buff.read(bytes,0,bytes.length);
                  txt = new String(bytes);
+                 title = get_title(txt,title_length);
 	         }
 	      }
 	   }catch(Exception ex) {
@@ -62,17 +155,19 @@
 	}
 	else if(type.equals("text"))
 	{
-		title = (String)request.getParameter("title");
 		txt = (String)request.getParameter("file_text");
+		if(!(request.getParameter("title").equals("")))
+			title = (String)request.getParameter("title");
+		else
+			title = get_title(txt,title_length);
 	}
 	else{
 	   response.sendRedirect("upload.jsp");
 	}
-	if (title.indexOf(".") > 0)
-		title = title.substring(0, title.lastIndexOf("."));
+	
 		
 	//Save file
-	try {
+	/* try {
 		File file_2 = new File(fpath);
 		FileWriter fileWriter = new FileWriter(file_2);
 		fileWriter.write(txt);
@@ -80,12 +175,11 @@
 		fileWriter.close(); 
 	}
 	catch (IOException e)
-	{ e.printStackTrace(); } 
+	{ e.printStackTrace(); }  */
 	
 	//Algo
 	int max_id = 0;
 	try {
-		
 		r = stmt.executeQuery("SELECT * FROM word_list");
 		
 		HashMap<String,WordDetails> hm=new HashMap<String,WordDetails>();
@@ -143,7 +237,7 @@
 			for(Map.Entry m:hm.entrySet())
 			{
 				wd = (WordDetails)m.getValue();
-				System.out.println(m.getKey()+" : Category_ID = "+wd.cat_id+" : Word_Count = "+wd.cnt);
+				//System.out.println(m.getKey()+" : Category_ID = "+wd.cat_id+" : Word_Count = "+wd.cnt);
 				if(wd.cnt > 0)
 				{
 					tmp_id = wd.cat_id;
@@ -199,6 +293,7 @@
 				String scores ="";
 				int cat_cnt = 0;
 				String others = "";
+				String morris_json = "";
 				for(Map.Entry m:score.entrySet())
 				{
 					tmp_id = (Integer)m.getKey();
@@ -223,6 +318,8 @@
 								cls = "warning";
 							else
 								cls = "danger";
+							
+							morris_json += "{label: \""+category.get(tmp_id)+"\", value: "+df.format(percent)+"},";
 					
 				%>
 					<div class="col-md-12">
@@ -244,7 +341,8 @@
 						percent = 0.00;
 					//out.println(category.get(tmp_id) + " : " + df.format(percent) + " %"+"<br/>");
 				}
-				others = others.substring(0,others.length()-1);
+				if(others.length() > 1)
+					others = others.substring(0,others.length()-1);
 			%>
 			<%
 			if(cats.length() > 0)
@@ -256,7 +354,34 @@
 			%>
 		</div>
 		<div id="analysis_body">
-			<script type="text/javascript" src="js/chart.js"></script>
+			<h3 class="text-center"><u>Suggested Title</u></h3>
+			<div class="col-md-12">
+				<h4><%=title %></h4>
+			</div>
+		</div>
+		<div id="analysis_body">
+			<link rel="stylesheet" href="css/morris.css" type="text/css"/>
+			<div class="box-body chart-responsive">
+				<div class="chart" id="percent-chart" style="height: 300px; position: relative;"></div>
+            </div>
+            <script type="text/javascript" src="js/raphael.js"></script>
+			<script type="text/javascript" src="js/morris.js"></script>
+			<script>
+		      $(function () {
+		        "use strict";
+		        
+		        var donut = new Morris.Donut({
+		          element: 'percent-chart',
+		          resize: true,
+		          colors: ["#3c8dbc", "#f56954", "#00a65a"],
+		          data: [
+		            <%= morris_json %>
+		          ],
+		          hideHover: 'auto'
+		        });
+		      });
+		    </script>
+			<%-- <script type="text/javascript" src="js/chart.js"></script>
 			<canvas id="myChart" width="500" height="200"></canvas>
 			<script>
 				var colors = ['rgba(54, 162, 235, 0.4)', 'rgba(255, 206, 86, 0.4)', 'rgba(255, 99, 132, 0.4)',
@@ -305,7 +430,7 @@
 					};
 				var temp = jQuery.extend(true, {}, config);
 				var myChart = new Chart(ctx, temp);
-			</script>
+			</script> --%>
 		</div>
 		<script type="text/javascript">
 			$(document).ready(function()
@@ -339,7 +464,7 @@
 					mcnt = ((Map.Entry<String, Integer>) e).getValue();
 					tags += "'"+tag+"',";
 					s_tags += tag+","; 
-					stmt.executeUpdate("INSERT into tags VALUES ('','"+tag+"',"+id+",'"+mcnt+"')");
+					//stmt.executeUpdate("INSERT into tags VALUES ('','"+tag+"',"+id+",'"+mcnt+"')");
 				%>
 					<a href="explore_tags.jsp?t=<%=tag%>" target="_blank" title="Explore">
 						<span class="label label-<%= classes[count%5]%>"><%=tag%> <span class="badge"><%=mcnt %></span></span>
@@ -355,10 +480,10 @@
 				tags.replaceAll("\'","\\\\'");
 				s_tags = s_tags.substring(0, s_tags.length()-1);
 			}
-			//stmt.executeUpdate("INSERT into articles VALUES ("+id+",'"+title+"','"+name+"',"+max_id+",'"+df.format(max_percent)+"','0','0',\""+tags+"\",'"+s_tags+"','"+others+"')");
+			//stmt.executeUpdate("INSERT into articles VALUES ("+id+",'"+title+"','"+name+"',"+max_id+",'"+df.format(max_percent)+"','0','0','0',\""+tags+"\",'"+s_tags+"','"+others+"')");
 		}
 		catch(Exception e)
-		{ System.out.println(e); }
+		{ System.out.println(e); e.printStackTrace(); }
 		%>
 		</div>
 		</div>

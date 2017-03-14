@@ -10,6 +10,7 @@
 		int score_weight = 30;
 		int view_weight = 30;
 		int time_weight = 30;
+		int review_weight = 30;
 		int articles_per_page = 4;
 		int len = 5; //No of pagination pages
 		int total_articles;
@@ -21,7 +22,7 @@
 		int total_views = r.getInt("total_views");
 		int total_time= r.getInt("total_time");
 		
-		String order_logic = " ORDER BY (cnt * "+tag_cnt_weight+")+(score * "+score_weight+")+((view_count*100/"+total_views+")*"+view_weight+")+((time_count*100/"+total_time+")*"+time_weight+") DESC";;
+		String order_logic = " ORDER BY (cnt * "+tag_cnt_weight+")+(score * "+score_weight+")+((view_count*100/"+total_views+")*"+view_weight+")+((time_count*100/"+total_time+")*"+time_weight+")+(review_score*"+review_weight+") DESC";;
 		
 		int p = 1;
 		if(page_no != null)
@@ -62,13 +63,20 @@
 					title = r2.getString("title");
 					a_name = r2.getString("name");
 					s_tags = r2.getString("s_tags");
+					s_tags = s_tags.trim();
 					s_tags = s_tags.replace(s,"");
 					s_tags = s_tags.replace(",,",",");
-					if(s_tags.charAt(0) == ',')
-						s_tags = s_tags.substring(1,s_tags.length());
-					if(s_tags.charAt(s_tags.length()-1) == ',')
-						s_tags = s_tags.substring(0,s_tags.length()-1);
-					String[] tags = s_tags.split(",");
+					String[] tags = {};
+					if(s_tags.length() > 0)
+					{
+						if(s_tags.charAt(0) == ',')
+							s_tags = s_tags.substring(1,s_tags.length());
+						if(s_tags.charAt(s_tags.length()-1) == ',')
+							s_tags = s_tags.substring(0,s_tags.length()-1);
+						tags = s_tags.split(",");
+					}
+					
+					
 					File file = new File(path+a_name);
 					FileInputStream fis = new FileInputStream(file);
 					byte[] data = new byte[(int) file.length()];
@@ -149,12 +157,25 @@
 					<div class="result_desc">
 						<p class="result_str"><%=str%></p>
 					</div>
+					<%if(tags.length > 0) { %>
 					<div class="result_desc">
 					<% for(String t : tags){%>  
 						<a href="explore_tags.jsp?t=<%=t%>" title="Explore">
 							<span class="label label-default" title="<%=cls%>"><%=t%></span>
 						</a>
 					<%}%>
+					</div>
+					<%}%>
+					<div class="result_desc">
+						<p><b>How good is this article?</b></p>
+						<%
+							/* String sql = "SELECT COUNT(*) AS cnt, (CASE WHEN (score > 75 ) THEN 'Great' WHEN (score > 50 AND score <=75) THEN 'Okay' ELSE 'Bad' END) as review WHERE article_id = "+a_id;
+							ResultSet r3 = stmt.executeQuery(sql);
+							while(r3.next())
+							{
+								out.println(r3.getString("review"));
+							} */
+						%>
 					</div>
 				</div>
 			<%
