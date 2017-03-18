@@ -152,7 +152,7 @@
 			%>
 				<div class="result">
 					<div class="result_head">
-						<a href="view_article.jsp?i=<%=a_id %>" class="text-primary"><%=title %></a>
+						<a href="view_article.jsp?i=<%=a_id %>" class="text-<%=cls %>"><%=title %></a>
 					</div>
 					<div class="result_desc">
 						<p class="result_str"><%=str%></p>
@@ -161,7 +161,7 @@
 					<div class="result_desc">
 					<% for(String t : tags){%>  
 						<a href="explore_tags.jsp?t=<%=t%>" title="Explore">
-							<span class="label label-default" title="<%=cls%>"><%=t%></span>
+							<span class="label label-<%=cls %>" title="<%=cls%>"><%=t%></span>
 						</a>
 					<%}%>
 					</div>
