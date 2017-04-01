@@ -1,0 +1,92 @@
+#comparison_head
+{
+	font-size: 25px;
+	margin-bottom: 0px;
+}
+#head_hash
+{
+	border-top-left-radius: 5px;
+}
+.head_name
+{
+	padding: 10px 3px;
+	text-align: center;
+	color: white;
+	background: #4286f4;
+}
+.head_name.user_name
+{
+	color: #4286f4;
+	background: white;
+}
+.head_name:last-child
+{
+	border-top-right-radius: 5px;
+}
+#comparison_body
+{
+	margin-top: 0px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	text-align: center;
+}
+.comparison_row:last-child .row_title
+{
+	border-bottom-left-radius: 5px;
+}
+.comparison_row:last-child .row_data:last-child
+{
+	border-bottom-right-radius: 5px;
+}
+.row_data
+{
+	background: #eee;
+	border: 1px solid #ccc;
+	font-size: 20px;
+}
+.row_title
+{
+	font-weight: 600;
+	font-size: 24px;
+	border-left: 2px solid #ccc;
+}
+.row_data:last-child
+{
+	border-right: 2px solid #ccc;
+}
+.user_data
+{
+	background: #fff;
+}
+.friend_data
+{
+	
+}
+.progress
+{
+	height: 24px;
+	margin: 8px 1px;
+	border-radius: 3px !important;
+	
+}
+.progress-bar
+{
+	font-size: 20px !important;
+	font-weight: 500 !important;
+}
+#bmi_div .row_data
+{
+	padding: 8px 2px;
+}
+#bmi_div .row_title
+{
+	padding: 11px 2px;
+}
+#age_div .row_data
+{
+	padding: 8px 2px;
+}
+#age_div .row_title
+{
+	padding: 10px 2px;
+}

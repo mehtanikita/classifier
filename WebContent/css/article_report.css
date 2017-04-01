@@ -21,10 +21,16 @@
 }
 #tags_div
 {
-	padding: 15px 15px;
+	padding: 15px 10px;
+}
+.tag
+{
+	display: inline-block;
+	margin-bottom: 15px !important;
+	padding: 0px 5px;
 }
 #tags_div .label
 {
 	font-size: 18px;
-	margin: 0px 5px;
+	border-radius: .25em !important;
 }

@@ -92,11 +92,27 @@ public String get_title(String txt, int len)
 			}
 		}
 		tmp_title = tmp_title.replaceAll("[^\\w\\s]+", "");
+		tmp_title = tmp_title.trim();
+				
+		String[] remove_words = {"with","at","from","into","during","including","until","against","among","throughout","despite","towards","upon","concerning","of","to","in","for","on","by","about","like","through","over","before","between","after","since","without","under","within","along","following","across","behind","beyond","plus","except","but","up","out","around","down","off","above","near"};
+		int l_ind = tmp_title.lastIndexOf(" ");
+		if(in_array(remove_words, tmp_title.substring(l_ind+1,tmp_title.length())))
+		{
+			tmp_title = tmp_title.substring(0,l_ind);
+		}
 	}
 	catch(Exception e){}
 	return tmp_title;
 }
-
+public boolean in_array(String[] arr, String targetValue)
+{
+	for(String s: arr)
+	{
+		if(s.equals(targetValue))
+			return true;
+	}
+	return false;
+}
 %>
 <% 
 	int count_weight = 50;		//Weight of number of words in deciding category
@@ -185,14 +201,15 @@ public String get_title(String txt, int len)
 		HashMap<String,WordDetails> hm=new HashMap<String,WordDetails>();
 		HashMap<String,Integer> hm1=new HashMap<String,Integer>();
 		String wrd;
-		int cat_id,cnt;
+		int cat_id,cnt,word_id;
 		while(r.next())
 		{
 			wrd = r.getString("word");
 			String wrd1=wrd.toLowerCase();
+			word_id = r.getInt("id");
 			cat_id = r.getInt("category_id");
 			cnt = r.getInt("count");
-			hm.put(wrd1,new WordDetails(new Integer(cat_id),new Integer(cnt)));
+			hm.put(wrd1,new WordDetails(new Integer(word_id),new Integer(cat_id),new Integer(cnt)));
 		}
 		WordDetails wd;
 		
@@ -231,9 +248,12 @@ public String get_title(String txt, int len)
 				if(w1 != null)
 				{
 					w1.cnt += 1;
-					hm.put(w, new WordDetails(new Integer(w1.cat_id),new Integer(w1.cnt)));
+					hm.put(w, new WordDetails(new Integer(w1.word_id), new Integer(w1.cat_id),new Integer(w1.cnt)));
 				}
 			}
+			int tmp_for_cnt = 0;
+			String update_cnt_sql = "UPDATE word_list SET count = (CASE ";
+			String update_article_sql = "UPDATE word_list SET articles = (CASE ";
 			for(Map.Entry m:hm.entrySet())
 			{
 				wd = (WordDetails)m.getValue();
@@ -249,10 +269,21 @@ public String get_title(String txt, int len)
 					freq_cnt.put(tmp_id,f_cnt);
 
 					hm1.put((String) m.getKey(), wd.cnt);
-	
+
 					total_words++;
 					total_freq += wd.cnt;
+					
+					update_cnt_sql += "WHEN id = "+wd.word_id+" THEN count + "+wd.cnt+" ";
+					update_article_sql += "WHEN id = "+wd.word_id+" THEN CONCAT(articles,'"+id+",') ";
+					tmp_for_cnt++;
 				}
+			}
+			update_cnt_sql += " ELSE count END);";
+			update_article_sql += " ELSE articles END);";
+			if(tmp_for_cnt > 0)
+			{
+				//stmt.executeUpdate(update_cnt_sql);
+				//stmt.executeUpdate(update_article_sql);
 			}
 		}
 		
@@ -381,56 +412,6 @@ public String get_title(String txt, int len)
 		        });
 		      });
 		    </script>
-			<%-- <script type="text/javascript" src="js/chart.js"></script>
-			<canvas id="myChart" width="500" height="200"></canvas>
-			<script>
-				var colors = ['rgba(54, 162, 235, 0.4)', 'rgba(255, 206, 86, 0.4)', 'rgba(255, 99, 132, 0.4)',
-				                'rgba(75, 192, 192, 0.4)', 'rgba(153, 102, 255, 0.4)', 'rgba(255, 159, 64, 0.4)']
-				var ctx = document.getElementById("myChart");
-				var config = {
-					    type: 'pie',
-					    data: {
-					        labels: [<%= cats%>],
-					        datasets: [{
-					            label: 'Percentage Score',
-					            data: [<%= scores%>],
-					            backgroundColor: [
-					              <%  
-					              for(int p=0; p<cat_cnt; p++)
-					              {
-					            	out.println("colors["+(p%6)+"],");
-					              }
-					              %> 
-					            ],
-					            borderColor: [
-								<%  
-					              for(int p=0; p<cat_cnt; p++)
-					              {
-					            	out.println("colors["+(p%6)+"],");
-					              }
-					              %> 
-					            ],
-					            borderWidth: 1,
-					            /*barThickness: 30*/
-					        }]
-					    },
-					    options: {
-					        /* scales: {
-					        	xAxes:[{
-					        		barThickness: 30
-					        	}],
-					            yAxes: [{
-					                ticks: {
-					                    beginAtZero:true
-					                }
-					            }],
-					            
-					        } */
-					    }
-					};
-				var temp = jQuery.extend(true, {}, config);
-				var myChart = new Chart(ctx, temp);
-			</script> --%>
 		</div>
 		<script type="text/javascript">
 			$(document).ready(function()
@@ -453,7 +434,10 @@ public String get_title(String txt, int len)
 			        return ((Map.Entry<String, Integer>) o2).getValue().compareTo(((Map.Entry<String, Integer>) o1).getValue());
 			    }
 			});
-			int count = 5,mcnt=0;
+			int count = total_words/4;
+			if(count > 10)
+				count = 10;
+			int mcnt=0;
 			String tag = "";
 			String[] classes = {"success","primary","danger","info","warning"};
 			for (Object e : a)
@@ -466,9 +450,11 @@ public String get_title(String txt, int len)
 					s_tags += tag+","; 
 					//stmt.executeUpdate("INSERT into tags VALUES ('','"+tag+"',"+id+",'"+mcnt+"')");
 				%>
-					<a href="explore_tags.jsp?t=<%=tag%>" target="_blank" title="Explore">
-						<span class="label label-<%= classes[count%5]%>"><%=tag%> <span class="badge"><%=mcnt %></span></span>
-					</a>
+					<div class="tag">
+						<a href="explore_tags.jsp?t=<%=tag%>" target="_blank" title="Explore">
+							<span class="label label-<%= classes[count%5]%>"><%=tag%> <span class="badge"><%=mcnt %></span></span>
+						</a>
+					</div>
 				<%
 				}
 					

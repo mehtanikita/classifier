@@ -55,7 +55,11 @@
 	cursor: pointer;
 	color: black;
 	text-align: left;
-	font-weight: 400;
+	font-weight: 600;
+}
+#search_list p strong
+{
+	font-weight: 400 !important;
 }
 .list_hover
 {

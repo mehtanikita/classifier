@@ -3,6 +3,7 @@
 <%@ page import="java.io.*" %>
 <%@include file="header.jsp" %>
 	<% 
+		int articles_per_page = 4;
 		int no_of_chars = 300;
 		int left_span = 60;
 		int right_span = 60;
@@ -11,7 +12,7 @@
 		int view_weight = 30;
 		int time_weight = 30;
 		int review_weight = 30;
-		int articles_per_page = 4;
+		
 		int len = 5; //No of pagination pages
 		int total_articles;
 		String s = request.getParameter("t");
@@ -50,10 +51,11 @@
 				int a_id = 0;
 				String a_name = "";
 				String title = "";
+				String r_score = "";
 				String s_tags = "";
 				String path = System.getProperty("user.dir")+"/";
 				Statement st = c.createStatement();
-				if(total_articles != 0){				
+				if(total_articles != 0){
 				while(r.next())
 				{
 					cls = classes[loop_cnt%5];
@@ -62,6 +64,7 @@
 					r2.next();
 					title = r2.getString("title");
 					a_name = r2.getString("name");
+					r_score = r2.getString("review_score");
 					s_tags = r2.getString("s_tags");
 					s_tags = s_tags.trim();
 					s_tags = s_tags.replace(s,"");
@@ -75,7 +78,6 @@
 							s_tags = s_tags.substring(0,s_tags.length()-1);
 						tags = s_tags.split(",");
 					}
-					
 					
 					File file = new File(path+a_name);
 					FileInputStream fis = new FileInputStream(file);
@@ -147,6 +149,8 @@
 					        count++;
 					    }
 					}
+					if(str.length() < no_of_chars)
+						str += main_str.substring(0,no_of_chars - str.length()) + "...";
 					str = str.replaceAll("[^\\x00-\\x7F]", "");
 					str = str.replace("?", "");
 			%>
@@ -167,15 +171,7 @@
 					</div>
 					<%}%>
 					<div class="result_desc">
-						<p><b>How good is this article?</b></p>
-						<%
-							/* String sql = "SELECT COUNT(*) AS cnt, (CASE WHEN (score > 75 ) THEN 'Great' WHEN (score > 50 AND score <=75) THEN 'Okay' ELSE 'Bad' END) as review WHERE article_id = "+a_id;
-							ResultSet r3 = stmt.executeQuery(sql);
-							while(r3.next())
-							{
-								out.println(r3.getString("review"));
-							} */
-						%>
+						<p>Average user ratings: <b><%=r_score%>%</b></p>
 					</div>
 				</div>
 			<%
@@ -184,7 +180,7 @@
 				r.close();
 				}
 				else{%>
-					<h2>No Results found!</h2>
+					<h2 class="text-center">No Results found!</h2>
 			<%}%>
 			<%
 				int pages = total_articles/articles_per_page;

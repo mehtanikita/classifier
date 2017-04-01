@@ -115,8 +115,8 @@
 					</div>
 					<div class="col-md-3">
 						<select class="form-control" id="sort_select">
-							<option value="score_desc" <%if(tmp.equals("score_desc")) out.println("selected"); %>>Ratings (High to Low)</option>
-							<option value="score_asc" <%if(tmp.equals("score_asc")) out.println("selected"); %>>Ratings (Low to High)</option>
+							<option value="score_desc" <%if(tmp.equals("score_desc")) out.println("selected"); %>>Highest rating first</option>
+							<option value="score_asc" <%if(tmp.equals("score_asc")) out.println("selected"); %>>Lowest rating first</option>
 							<option value="id_desc" <%if(tmp.equals("id_desc")) out.println("selected"); %>>Newest First</option>
 							<option value="id_asc" <%if(tmp.equals("id_asc")) out.println("selected"); %>>Oldest First</option>
 						</select>
@@ -145,7 +145,7 @@
 							
 							<div class="col-md-12">
 								<div class="col-md-9">
-									<h4>Posted by <%=r.getString("name") %></h4>
+									<h4>Posted by <i><%=r.getString("name") %></i></h4>
 									<p><%=r.getString("text") %></p>
 								</div>
 								<div class="knob_div col-md-3 text-center">

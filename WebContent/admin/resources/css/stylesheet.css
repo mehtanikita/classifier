@@ -1,0 +1,192 @@
+body
+{
+	
+}
+.pointer, a, input[type=radio], select
+{
+	cursor: pointer;
+}
+.attendance_radio
+{
+	margin-right: 15px;
+	width: 20px;
+	height: 20px;
+	padding: 10px;
+	color: red;
+}
+input[type=date], input[type=month]
+{
+	height: 42px;
+	font-size: 120%;
+	border-radius: 2px;
+	border: 1px solid #aaa;
+}
+.font125
+{
+	font-size: 125%;
+}
+#content_div
+{
+	min-height: 600px;
+	overflow-x: auto !important;
+	margin-right: 10px !important;
+}
+.white
+{
+	color: white;
+}
+.underline
+{
+	text-decoration: underline;
+}
+.lr0pad
+{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.bg-white
+{
+	background-color: white; 
+}
+.current_link
+{
+	color: white !important;
+}
+.round
+{
+	border-radius: 90%;
+}
+label.error
+{
+	color: #ff0000;
+	font-weight: 400;
+}
+a
+{
+	text-decoration: none !important;
+}
+.active_sidelink a
+{
+	color: white !important;	
+}
+.select2-selection__rendered, .select2-selection__arrow
+{
+	font-size: 115%;
+	font-weight: 650;
+	line-height: 36px !important;
+	height: 40px !important;
+}
+.select2-selection__arrow
+{
+	margin-right: 8px;
+}
+.select2-selection
+{
+	height: 42px !important;
+}
+.bg-ltblue
+{
+	background: #00c0ef;
+}
+.form-input
+{
+	border-radius: 3px;
+	font-size: 20px;
+}
+.progress_tip
+{
+	background: #cfe3e8;
+	cursor: pointer;
+}
+.tooltip
+{
+	background: white;
+	font-weight: 400;
+}
+.round
+{
+	border-radius: 100%;
+}
+.tip_danger + .tooltip > .tooltip-inner{background-color: #d9534f;}
+.tip_danger + .tooltip > .tooltip-arrow { border-bottom-color:#d9534f; }
+
+.tip_warning + .tooltip > .tooltip-inner{background-color: #f0ad4e;}
+.tip_warning + .tooltip > .tooltip-arrow { border-bottom-color:#f0ad4e; }
+
+.tip_info + .tooltip > .tooltip-inner{background-color: #5bc0de;}
+.tip_info + .tooltip > .tooltip-arrow { border-bottom-color:#5bc0de; }
+
+.tip_primary + .tooltip > .tooltip-inner{background-color: #337ab7;}
+.tip_primary + .tooltip > .tooltip-arrow { border-bottom-color:#337ab7; }
+
+.tip_success + .tooltip > .tooltip-inner{background-color: #5cb85c;}
+.tip_success + .tooltip > .tooltip-arrow { border-bottom-color:#5cb85c; }
+
+.tip_danger_lg + .tooltip { width: 100%;}
+.tip_danger_lg + .tooltip > .tooltip-inner{background-color: red; font-size: 130%;}
+.tip_danger_lg + .tooltip > .tooltip-arrow { border-right-color:red; }
+
+.tip_info_lg + .tooltip { width: 100%;}
+.tip_info_lg + .tooltip > .tooltip-inner{background-color: #0da3e2; font-size: 150%;}
+.tip_info_lg + .tooltip > .tooltip-arrow { border-right-color:#0da3e2; }
+input[type=text]
+{
+	height: 42px;
+	border-radius: 5px;
+}
+hr
+{
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #ccc;
+	margin: 1em 0;
+	padding: 0;
+}
+#title_div
+{
+	text-align: center;
+	padding-top: 0.3%;
+}
+#link_title
+{
+	color: white;
+	font-size: 250%;
+	margin-right: 8%;
+}
+.confirm_friend_li
+{
+	cursor: pointer;
+	padding: 10px 10px;
+	transition: all 0.3s ease;
+	font-size: 18px;
+	overflow: auto;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
+.confirm_friend_li:hover
+{
+	background: #eee;
+}
+.confirm_friend_li:first-child
+{
+	border-top: 2px solid #ccc;
+}
+.confirm_friend_li:last-child
+{
+	border-bottom: 2px solid #ccc;
+}
+#logout_link
+{
+	margin-right: 2%;
+}
+#logout_link .logout_text
+{
+	font-size: 140%;
+}
+#logout_link a
+{
+	color: white;
+	font-size: 130%;
+	vertical-align: middle;
+}

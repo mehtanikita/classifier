@@ -1,3 +1,35 @@
+#search_div
+{
+}
+#search_list
+{
+	display: none;
+	width: 96%;
+	position: absolute;
+	background: white;
+	padding: 0px;
+	border: 1px solid #ccc;
+	z-index: 200;
+	overflow: none;
+}
+#search_list p
+{
+	font-size: 16px;
+	padding: 3px 3px 3px 5px;
+	margin: 0px;
+	cursor: pointer;
+	color: black;
+	text-align: left;
+	font-weight: 600;
+}
+#search_list p strong
+{
+	font-weight: 400 !important;
+}
+.list_hover
+{
+	background: #ccc!important;
+}
 #search_results_div
 {
 }
@@ -41,7 +73,20 @@
     text-align: justify;
     text-justify: inter-word;
 }
+.pagination_div
+{
+	text-align: center;
+}
+.pagination_div.pagination
+{
+	display: inline-block;
+}
 #footer
 {
 	padding-top: 30px;
+}
+.label
+{
+	font-size: 15px;
+	margin: 0px 2px;
 }
