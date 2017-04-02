@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@include file="settings.jsp" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -8,7 +9,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>El' Predicto</title>
+	<title>Admin Panel</title>
 	<meta
 		content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
 		name="viewport">
@@ -44,6 +45,28 @@
 	<script type="text/javascript" src="admin/resources/others/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 	<script type="text/javascript" src="admin/resources/others/dist/js/app.min.js"></script>
 </head>
+<%!
+	public static String get_name(String name, HashMap<String,String> vars)
+	{
+		return vars.get(name).split(":")[0];
+	}
+	public static int get_value(String name, HashMap<String,String> vars)
+	{
+		return Integer.parseInt(vars.get(name).split(":")[1]);
+	}
+%>
+<%
+	HashMap<String,String> vars=new HashMap<String,String>();
+	
+	try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/variables.txt"))) {
+	    String line;
+	    String[] arr = new String[2];
+	    while ((line = br.readLine()) != null) {
+	    	arr = line.split(",");
+	    	vars.put(arr[0],arr[1]);
+	    }
+	}
+%>
 <body class="skin-blue sidebar-mini">
 	<div id="wrapper">
 		<header class="main-header"  style="position: fixed; width: 100%">

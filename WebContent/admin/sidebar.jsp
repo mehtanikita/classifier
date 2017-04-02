@@ -9,17 +9,18 @@
 	            </div>
 	            <div class="pull-left info">
 	                <p></p>
-	                <p>Dashboard</p>
+	                <p>Admin Panel</p>
 	            </div>
 	        </div>
 	
 	        <ul class="sidebar-menu">
 	            <li class="active">&nbsp</li>
 	            <li class="treeview">
-	                <a ref=""><i class="fa fa-home"></i><span> Dashboard</span> <i class="fa fa-angle-left pull-right"></i></a>
+	                <a ref=""><i class="fa fa-dashcube"></i><span> Dashboard</span> <i class="fa fa-angle-left pull-right"></i></a>
 	                <ul class="treeview-menu">
-	                    <li><a href="admin/dashboard.jsp"><i class="fa fa-search"></i> Trending Searches </a></li>
-	                    <li><a href=""><i class="fa fa-book"></i> Trending Articles </a></li>
+	                    <li><a href="admin/dashboard.jsp"><i class="fa fa-home"></i> Home </a></li>
+	                    <li><a href="admin/view_articles.jsp"><i class="fa fa-file-text"></i> Articles </a></li>
+	                    <li><a href="admin/categories.jsp"><i class="fa fa-book"></i> Categories </a></li>
 	                </ul>
 	            </li>
 	        </ul>

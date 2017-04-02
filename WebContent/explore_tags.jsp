@@ -3,15 +3,16 @@
 <%@ page import="java.io.*" %>
 <%@include file="header.jsp" %>
 	<% 
-		int articles_per_page = 4;
-		int no_of_chars = 300;
+		int articles_per_page = get_value("articles_per_page",vars);
+		int no_of_chars = get_value("abstract_size",vars);
 		int left_span = 60;
 		int right_span = 60;
-		int tag_cnt_weight = 30;
-		int score_weight = 30;
-		int view_weight = 30;
-		int time_weight = 30;
-		int review_weight = 30;
+		
+		int tag_cnt_weight = get_value("tag_weight",vars);
+		int score_weight = get_value("score_weight",vars);
+		int view_weight = get_value("view_weight",vars);
+		int time_weight = get_value("time_weight",vars);
+		int review_weight = get_value("review_weight",vars);
 		
 		int len = 5; //No of pagination pages
 		int total_articles;
@@ -23,7 +24,7 @@
 		int total_views = r.getInt("total_views");
 		int total_time= r.getInt("total_time");
 		
-		String order_logic = " ORDER BY (cnt * "+tag_cnt_weight+")+(score * "+score_weight+")+((view_count*100/"+total_views+")*"+view_weight+")+((time_count*100/"+total_time+")*"+time_weight+")+(review_score*"+review_weight+") DESC";;
+		String order_logic = " ORDER BY (cnt * "+tag_cnt_weight+")+(score * "+score_weight+")+((view_count*100/"+total_views+")*"+view_weight+")+((time_count*100/"+total_time+")*"+time_weight+")+(review_score*"+review_weight+") DESC";
 		
 		int p = 1;
 		if(page_no != null)

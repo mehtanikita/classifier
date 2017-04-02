@@ -3,6 +3,7 @@
 <%@include file="header.jsp" %>
 	<link href="css/index.css" rel="stylesheet" type="text/css"/>
 	<script src="js/index.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/search_box.js"></script>
 	<a name="about"></a>
     <div class="intro-header">
         <div class="container">
@@ -32,19 +33,54 @@
 
     <!-- Page Content -->
 
-	<a  name="services"></a>
+	<a  name="trending"></a>
     <div class="content-section-a">
-
+	<%
+		int score_weight = 30;
+		int view_weight = 30;
+		int time_weight = 30;
+		int review_weight = 30;
+		int limit;
+		ResultSet r;
+		String search_q;
+	%>
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-sm-6">
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">Death to the Stock Photo:<br>Special Thanks</h2>
-                    <p class="lead">A special thanks to <a target="_blank" href="http://join.deathtothestockphoto.com/">Death to the Stock Photo</a> for providing the photographs that you see in this template. Visit their website to become a member.</p>
+                    <h2 class="section-heading"><u>Most viewed articles</u></h2>
+                    <%
+                    	limit = 5;
+	                    int max_chars = 70;				
+	                    r = stmt.executeQuery("SELECT SUM(view_count) AS total_views, SUM(time_count) AS total_time FROM articles");
+	            		r.next();
+	            		int total_views = r.getInt("total_views");
+	            		int total_time= r.getInt("total_time");
+	            		
+                    	search_q = "SELECT * FROM articles ORDER BY (score * "+score_weight+")+((view_count*100/"+total_views+")*"+view_weight+")+((time_count*100/"+total_time+")*"+time_weight+")+(review_score*"+review_weight+") DESC LIMIT "+limit;
+                    	r = stmt.executeQuery(search_q);
+                    	String ta;
+                    	int id;
+                    	while(r.next())
+                    	{
+                    		id = r.getInt("id");
+                    		ta = r.getString("title");
+                    		if(ta.length() > max_chars + 3)
+                    			ta = ta.substring(0,max_chars+1) + "...";
+                    %>
+                    	<p class="lead"><a target="_blank" href="view_article.jsp?i=<%=id%>"><b>
+                    		<span class="trending_article_text">
+                    			<span class="glyphicon glyphicon-pushpin"></span> <%=ta%>
+                    		</span>
+                    	</b></a></p>	
+                    <%
+                    	}
+                    %>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="img/ipad.png" alt="">
+                	<br/><br/><br/>
+                    <img class="img-responsive" src="img/trending.png" alt="">
                 </div>
             </div>
 
@@ -62,11 +98,28 @@
                 <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">3D Device Mockups<br>by PSDCovers</h2>
-                    <p class="lead">Turn your 2D designs into high quality, 3D product shots in seconds using free Photoshop actions by <a target="_blank" href="http://www.psdcovers.com/">PSDCovers</a>! Visit their website to download some of their awesome, free photoshop actions!</p>
+                    <h2 class="section-heading"><u>What people search for most?</u></h2>
+                    <%
+                    	limit = 5;
+                    	search_q = "SELECT id,search_string,SUM(click_cnt) AS cnt FROM `search` GROUP BY search_string ORDER BY cnt DESC LIMIT "+limit;
+                    	r = stmt.executeQuery(search_q);
+                    	String ss;
+                    	while(r.next())
+                    	{
+                    		ss = r.getString("search_string");
+                    %>
+                    	<p class="lead"><a target="_blank" href="search.jsp?q=<%=ss%>"><b>
+                    		<span class="trending_search_text">
+                    			<span class="glyphicon glyphicon-search"></span> <%=ss%>
+                    		</span>
+                    	</b></a></p>	
+                    <%
+                    	}
+                    %>
                 </div>
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-                    <img class="img-responsive" src="img/dog.png" alt="">
+                	<br/><br/><br/>
+                    <img class="img-responsive" src="img/search.png" alt="">
                 </div>
             </div>
 
@@ -105,7 +158,7 @@
 
             <div class="row">
                 <div class="col-lg-6">
-                    <h2>Connect to Start Bootstrap:</h2>
+                    <h2>Connect with us:</h2>
                 </div>
                 <div class="col-lg-6">
                     <ul class="list-inline banner-social-buttons">

@@ -1,0 +1,8 @@
+time_weight,Time Count Weight:100
+tag_weight,Tag Count Weight:50
+score_weight,Score Weight:0
+articles_per_page,Articles Per Page:25
+view_weight,View Count Weight:30
+review_weight,Review Score Weight:30
+record_days,Number of previous days:49
+abstract_size,Size of Abstract:1000

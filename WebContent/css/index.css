@@ -65,5 +65,10 @@
 {
 	background: #ccc!important;
 }
+.trending_article_text .glyphicon, .trending_search_text .glyphicon 
+{
+	font-size: 16px;
+	top: 3px;
+}
 ::-webkit-input-placeholder { text-align:center; }
 input:-moz-placeholder { text-align:center; }

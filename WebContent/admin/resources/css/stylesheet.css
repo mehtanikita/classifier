@@ -44,6 +44,14 @@ input[type=date], input[type=month]
 	padding-left: 0px;
 	padding-right: 0px;
 }
+.l0pad
+{
+	padding-left: 0px;
+}
+.r0pad
+{
+	padding-right: 0px;
+}
 .bg-white
 {
 	background-color: white; 

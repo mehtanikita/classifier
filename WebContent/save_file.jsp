@@ -208,7 +208,7 @@ public boolean in_array(String[] arr, String targetValue)
 			String wrd1=wrd.toLowerCase();
 			word_id = r.getInt("id");
 			cat_id = r.getInt("category_id");
-			cnt = r.getInt("count");
+			cnt = 0;
 			hm.put(wrd1,new WordDetails(new Integer(word_id),new Integer(cat_id),new Integer(cnt)));
 		}
 		WordDetails wd;
@@ -332,7 +332,7 @@ public boolean in_array(String[] arr, String targetValue)
 					if(total_score != 0)
 					{
 						percent = ((double)tmp_score/(double)total_score)*100;
-						if(tmp_score > 0)
+						if(tmp_score > 0 && percent > 10 )
 						{
 							if(!df.format(percent).equals(df.format(max_percent)))
 								others += tmp_id+":"+df.format(percent)+",";
@@ -354,7 +354,7 @@ public boolean in_array(String[] arr, String targetValue)
 					
 				%>
 					<div class="col-md-12">
-						<div class="col-md-4">
+						<div class="col-md-5">
 							<h3><%= category.get(tmp_id) %>: </h3> 
 						</div>
 						<div class="col-md-6">

@@ -164,15 +164,29 @@
 		}
 	%>
 	<% 
+		if(request.getParameterMap().containsKey("q"))
+		{
+			if(request.getParameter("q").trim().equals(""))
+				response.sendRedirect("index.jsp");
+		}
+		else
+			response.sendRedirect("index.jsp");
+
 		String s = request.getParameter("q");
-		int articles_per_page = 5;
+		int articles_per_page = get_value("articles_per_page",vars);
 		int no_of_articles = 0;
 		int total_articles;
 		
-		int no_of_chars = 300;
+		int no_of_chars = get_value("abstract_size",vars);
 		int left_span = 60;
 		int right_span = 60;
 		
+		int score_weight = get_value("score_weight",vars);
+		int view_weight = get_value("view_weight",vars);
+		int time_weight = get_value("time_weight",vars);
+		int review_weight = get_value("review_weight",vars);
+		
+		ResultSet r;
 		int len = 5;//No of pagination pages
 		String page_no = request.getParameter("p");
 		int p = 1;
@@ -183,8 +197,21 @@
 		
 		HashMap<Integer,ArticleDetails> articles=new HashMap<Integer,ArticleDetails>();
 		
-		String ts = s.replaceAll("[^\\w\\s]+", "");
-		ts = ts.trim();
+		s = s.replaceAll("[^\\w\\s:]+", "");
+		s = s.trim();
+		
+		String cat_query = "";
+		if(s.indexOf(":") > -1)
+		{
+			String cq = "SELECT * FROM category WHERE name = '"+s.substring(0,s.indexOf(':'))+"'";
+			ResultSet cr = stmt.executeQuery(cq);
+			if(cr.next())
+			{
+				int cat_id = cr.getInt("id");
+				cat_query = " UNION SELECT * FROM articles AS cat_tab WHERE category_id = '"+cat_id+"'";
+			}
+		}
+		String ts = s;
 		int spaces = ts.length() - ts.replace(" ", "").length();
 		int n_splits = 1;
 		int ind,e_ind,start = 0,end = ts.length();
@@ -232,17 +259,37 @@
 			order_clause += " WHEN title LIKE '%"+words.get(i)+"%' THEN "+(i+1)+" ";
 			
 		}
+		r = stmt.executeQuery("SELECT SUM(view_count) AS total_views, SUM(time_count) AS total_time FROM articles");
+		r.next();
+		int total_views = r.getInt("total_views");
+		int total_time= r.getInt("total_time");
+		
+		String order_logic = "(score * "+score_weight+")+((view_count*100/"+total_views+")*"+view_weight+")+((time_count*100/"+total_time+")*"+time_weight+")+(review_score*"+review_weight+") DESC";;
 		String[] splits = s.split(" ");
 		String tag_query = "";
 		String word_query = "";
+		String search_query = "";
+		int w_c = 0; 
 		for(String w : splits)
 		{
-			tag_query += " UNION SELECT * FROM articles WHERE id IN (SELECT article_id FROM `tags` WHERE name = '"+w+"' GROUP BY name)";
-			word_query += " UNION SELECT * FROM articles WHERE id IN (SELECT articles FROM `word_list` WHERE count > 0 AND word = '"+w+"')";
+			w_c++;
+			tag_query += " UNION SELECT * FROM articles AS t"+w_c+" WHERE id IN (SELECT article_id FROM `tags` WHERE name = '"+w+"' GROUP BY name) ";
+			word_query += " UNION SELECT * FROM articles AS w"+w_c+" WHERE id IN (SELECT articles FROM `word_list` WHERE count > 0 AND word = '"+w+"') ";
+			search_query += " UNION SELECT * FROM articles AS s"+w_c+" WHERE id IN (SELECT article_id FROM `search` WHERE search_string LIKE '%"+w+"%') ";
 		}
-		String query = "SELECT * FROM articles WHERE "+where_clause+" "+tag_query+" "+word_query+" ORDER BY CASE "+order_clause+" END LIMIT "+p+","+articles_per_page;
+		String limit_clause = " LIMIT "+p+","+articles_per_page;
 		
-		ResultSet r = stmt.executeQuery(query);
+		String query = "SELECT * FROM articles AS title_table WHERE "+where_clause+" "+tag_query+" "+word_query+" "+cat_query+" ORDER BY CASE "+order_clause+" END, "+order_logic;
+		
+		String cnt_q = "SELECT COUNT(*) AS query_cnt FROM ("+query+") AS cnt_q";
+		
+		query += limit_clause;
+		
+		r = stmt.executeQuery(cnt_q);
+		r.next();
+		total_articles = r.getInt("query_cnt");
+		
+		r = stmt.executeQuery(query);
 		ArticleDetails ar;
 		String s_tags;
 		String path = System.getProperty("user.dir")+"/";
@@ -269,18 +316,17 @@
 			fis.read(data);
 			fis.close();
 			
-			ar = new ArticleDetails(r.getInt("id"), r.getString("title"), r.getString("name"), get_abstract(data,s,no_of_chars,left_span,right_span), r.getInt("review_score"), tags);
-			out.println(ar.pr());
+			ar = new ArticleDetails(r.getInt("id"), r.getString("title"), r.getString("name"), get_abstract(data,s,no_of_chars,left_span,right_span), r.getString("review_score"), tags);
 			articles.put(a_cnt, ar);
 			
 		}
-		total_articles = 25;
 		
 		String[] classes = {"primary","success","danger","info","warning"};
 		String cls = "";
 	%>
 	<link href="css/search.css" rel="stylesheet" type="text/css"/>
 	<script type="text/javascript" src="js/search.js"></script>
+	<script type="text/javascript" src="js/search_box.js"></script>
 	<div id="main_div" class="col-md-12">
 		
 		<div id="search_results_div" class="col-md-offset-2 col-md-8">
@@ -385,25 +431,25 @@
 				<ul class="pagination">
 				<% if(pages <= len){ %>
 					<% for(int j=1; j<=pages; j++){ %>
-						<li <% if(cp==j) out.println("class=\"active\"");%>><a href="explore_tags.jsp?t=<%=s%>&p=<%=j%>"><%=j%></a></li>
+						<li <% if(cp==j) out.println("class=\"active\"");%>><a href="search.jsp?q=<%=s%>&p=<%=j%>"><%=j%></a></li>
 					<%}}else if(cp<=len){for(int j=1; j<=len; j++){ %>
-						<li <% if(cp==j) out.println("class=\"active\"");%>><a href="explore_tags.jsp?t=<%=s%>&p=<%=j%>"><%=j%></a></li>
+						<li <% if(cp==j) out.println("class=\"active\"");%>><a href="search.jsp?q=<%=s%>&p=<%=j%>"><%=j%></a></li>
 					<%}%>
-						<li title="Next Page"><a href="explore_tags.jsp?t=<%=s%>&p=<%=len+1%>">&gt;</a></li>
-						<li title="Last Page"><a href="explore_tags.jsp?t=<%=s%>&p=<%=pages%>">&gt;&gt;</a></li>
+						<li title="Next Page"><a href="search.jsp?q=<%=s%>&p=<%=len+1%>">&gt;</a></li>
+						<li title="Last Page"><a href="search.jsp?q=<%=s%>&p=<%=pages%>">&gt;&gt;</a></li>
 					<%}else if(cp>=pages-len+1){%>
-						<li title="First Page"><a href="explore_tags.jsp?t=<%=s%>&p=1">&lt;&lt;</a></li>
-						<li title="Previous Page"><a href="explore_tags.jsp?t=<%=s%>&p=<%=pages-len%>">&lt;</a></li>
+						<li title="First Page"><a href="search.jsp?q=<%=s%>&p=1">&lt;&lt;</a></li>
+						<li title="Previous Page"><a href="search.jsp?q=<%=s%>&p=<%=pages-len%>">&lt;</a></li>
 					<%for(int j=pages-len+1; j<=pages; j++){ %>
-						<li <% if(cp==j) out.println("class=\"active\"");%>><a href="explore_tags.jsp?t=<%=s%>&p=<%=j%>"><%=j%></a></li>
+						<li <% if(cp==j) out.println("class=\"active\"");%>><a href="search.jsp?q=<%=s%>&p=<%=j%>"><%=j%></a></li>
 					<%}}else {%>
-						<li title="First Page"><a href="explore_tags.jsp?t=<%=s%>&p=1">&lt;&lt;</a></li>
-						<li title="Previous Page"><a href="explore_tags.jsp?t=<%=s%>&p=<%=cp-(len/2)-1%>">&lt;</a></li>
+						<li title="First Page"><a href="search.jsp?q=<%=s%>&p=1">&lt;&lt;</a></li>
+						<li title="Previous Page"><a href="search.jsp?q=<%=s%>&p=<%=cp-(len/2)-1%>">&lt;</a></li>
 					<%for(int j=cp-(len/2); j<=cp+(len/2); j++){ %>
-						<li <% if(cp==j) out.println("class=\"active\"");%>><a href="explore_tags.jsp?t=<%=s%>&p=<%=j%>"><%=j%></a></li>
+						<li <% if(cp==j) out.println("class=\"active\"");%>><a href="search.jsp?q=<%=s%>&p=<%=j%>"><%=j%></a></li>
 					<%}%>
-						<li title="Next Page"><a href="explore_tags.jsp?t=<%=s%>&p=<%=cp+(len/2)+1%>">&gt;</a></li>
-						<li title="Last Page"><a href="explore_tags.jsp?t=<%=s%>&p=<%=pages%>">&gt;&gt;</a></li>
+						<li title="Next Page"><a href="search.jsp?q=<%=s%>&p=<%=cp+(len/2)+1%>">&gt;</a></li>
+						<li title="Last Page"><a href="search.jsp?q=<%=s%>&p=<%=pages%>">&gt;&gt;</a></li>
 					<%} %>
 				</ul>
 			</div>
@@ -418,10 +464,11 @@
 				{
 					s = s.replace("[^\\w\\s]+", "");
 					s = s.trim();
-					var spaces = s.length - s.replace(" ", "").length;
+					var spaces = s.length - s.replace(new RegExp("\\s", 'g'), "").length;
+
 					var n_splits = 1;
 					var ind,e_ind,start = 0,end = s.length;
-					while((n_splits <= spaces+1) && (true))
+					while((n_splits <= spaces+1))
 					{
 						if(n_splits == 1)
 						{

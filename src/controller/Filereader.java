@@ -23,14 +23,15 @@ try
 	
 	HashMap<String,WordDetails> hm=new HashMap<String,WordDetails>();    
 	String wrd;
-	int cat_id,cnt;
+	int word_id,cat_id,cnt;
 	while(r.next())
 	{
 		wrd = r.getString("word");
 		String wrd1=wrd.toLowerCase();
+		word_id = r.getInt("id");
 		cat_id = r.getInt("category_id");
 		cnt = r.getInt("count");
-		hm.put(wrd1,new WordDetails(new Integer(cat_id),new Integer(cnt)));
+		hm.put(wrd1,new WordDetails(new Integer(word_id), new Integer(cat_id),new Integer(cnt)));
 	}
 	WordDetails wd;
 	
@@ -73,7 +74,7 @@ try
 				if(w1 != null)
 				{
 					w1.cnt += 1;
-					hm.put(w, new WordDetails(new Integer(w1.cat_id),new Integer(w1.cnt)));
+					hm.put(w, new WordDetails(new Integer(w1.word_id), new Integer(w1.cat_id),new Integer(w1.cnt)));
 				}
 			}
 			for(Map.Entry m:hm.entrySet())

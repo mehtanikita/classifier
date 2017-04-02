@@ -22,6 +22,24 @@
 	<script src="js/bootstrap.js" type="text/javascript"></script>
 	<script src="js/general.js" type="text/javascript"></script>
 </head>
+<%!
+	public static int get_value(String name, HashMap<String,String> vars)
+	{
+		return Integer.parseInt(vars.get(name).split(":")[1]);
+	}
+%>
+<%
+	HashMap<String,String> vars=new HashMap<String,String>();
+	
+	try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/variables.txt"))) {
+	    String line;
+	    String[] arr = new String[2];
+	    while ((line = br.readLine()) != null) {
+	    	arr = line.split(",");
+	    	vars.put(arr[0],arr[1]);
+	    }
+	}
+%>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
         <div class="container topnav">
@@ -38,11 +56,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="index.jsp#about">Upload</a>
+                	<li>
+                        <a href="index.jsp#trending">Trending</a>
                     </li>
                     <li>
-                        <a href="index.jsp#services">Services</a>
+                        <a href="upload.jsp">Upload</a>
                     </li>
                     <li>
                         <a href="index.jsp#contact">Contact</a>

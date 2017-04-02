@@ -7,5 +7,9 @@
 		admin_id = (int) session.getAttribute("admin_id");
 	}
 	if(admin_id != 13)
+	{
 		response.sendRedirect("index.jsp");
+		return;
+	}
+		
 %>

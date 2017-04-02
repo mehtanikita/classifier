@@ -1,136 +1,32 @@
 <!DOCTYPE html>
-
 <html >
-
 <head>
-<meta charset="UTF-8">
-  
-<title>Admin Panel</title>
-<base href="${pageContext.request.contextPath}/"></base>
-<link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Open+Sans:600'>
-
- 
-<link rel="stylesheet" href="admin/resources/css/style1.css">
-
- 
-
+  <meta charset="UTF-8">
+  <title>Material Design Login Form</title>
+  <base href="${pageContext.request.contextPath}/"></base>
+  <link rel="stylesheet" href="admin/resources/css/index.css">
 </head>
 
-
 <body>
-  
-<div class="login-wrap">
-	
-<div class="login-html">
-		
-<input id="tab-1" type="radio" name="tab" class="sign-in" checked>
-<label for="tab-1" class="tab">Sign In</label>
-		
-<input id="tab-2" type="radio" name="tab" class="sign-up">
-<label for="tab-2" class="tab">Sign Up</label>
-		
-<div class="login-form">
-			
-<div class="sign-in-htm">
-<form method="post" action="admin/check_login.jsp">	
-<div class="group">
-					
-<label for="user" class="label">Username</label>
-					
-<input name="username" type="text" class="input">
-				
-</div>
-				
-<div class="group">
-					
-<label for="pass" class="label">Password</label>
-					
-<input name="password" type="password" class="input" data-type="password">
-				
-</div>
-				
-<div class="group">
-					
-<input id="check" type="checkbox" class="check" checked>
-					
-<label for="check"><span class="icon"></span> Keep me Signed in</label>
-				
-</div>
-				
-<div class="group">
-					
-<input type="submit" class="button" value="Sign In">
-</form>
-</div>
-				
-<div class="hr">
-</div>
-				
-<div class="foot-lnk">
-					
-<a href="#forgot">Forgot Password?</a>
-				
-</div>
-			
-</div>
-			
-<div class="sign-up-htm">
-<form method="post" action="user/register">
-<div class="group">
-					
-<label for="user" class="label">Username</label>
-					
-<input name="username" type="text" class="input">
-				
-</div>
-				
-<div class="group">
-					
-<label for="pass" class="label">Password</label>
-					
-<input name="password" type="password" class="input" data-type="password">
-				
-</div>
-				
-<div class="group">
-					
-<label for="pass" class="label">Repeat Password</label>
-					
-<input id="pass" type="password" class="input" data-type="password">
-				
-</div>
-				
-<div class="group">
-					
-<label for="email" class="label">Email Address</label>
-					
-<input name="email" type="text" class="input">
-				
-</div>
-				
-<div class="group">
-					
-<input type="submit" class="button" value="Sign Up">
-				</form>
-</div>
-				
-<div class="hr"></div>
-				
-<div class="foot-lnk">
-					
-<label for="tab-1">Already Member?</a>
-				
-</div>
-			
-</div>
-		
-</div>
-	
-</div>
-</div>
-  
-  
+  <hgroup>
+  <h1>Admin Panel</h1>
+</hgroup>
+	<form action="admin/check_login.jsp" method="POST">
+		 <div class="group">
+		   <input type="text" name="username" required><span class="highlight"></span><span class="bar"></span>
+		   <label>Username</label>
+		 </div>
+		 <div class="group">
+		   <input type="password" name="password" required><span class="highlight"></span><span class="bar"></span>
+		   <label>Password</label>
+		 </div>
+		 <button type="submit" class="button buttonBlue">Login
+		   <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+		 </button>
+	</form>
+  	<script src='admin/resources/js/jquery.js'></script>
+
+    <script src="admin/resources/js/index.js"></script>
 
 </body>
-
 </html>

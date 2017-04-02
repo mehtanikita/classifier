@@ -94,6 +94,14 @@ body
 	padding-left: 0px;
 	padding-right: 0px;
 }
+.l0pad
+{
+	padding-left: 0px;
+}
+.r0pad
+{
+	padding-right: 0px;
+}
 input::-webkit-calendar-picker-indicator
 {
 	display: none;
@@ -194,4 +202,19 @@ hr
 	text-align: center;
 	font-size: 18px;
 	margin: auto;
+}
+#scrollToTop
+{
+	position: fixed;
+	width: 45px;
+	height: 45px;
+    bottom: 40px;
+    right: 20px;
+	padding: 0px 2px 4px 5px;
+	display: none;
+	font-size: 155%;
+}
+#scrollToTop:hover
+{
+	text-decoration:none;
 }

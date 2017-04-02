@@ -22,6 +22,9 @@
                         </li>
                     </ul>
                     <p class="copyright text-muted small">Copyright &copy; Classifier 2017. All Rights Reserved</p>
+                    <button type="button" class="btn btn-primary round" id="scrollToTop" title="Scroll to top">
+				        <span class="glyphicon glyphicon-chevron-up"></span>
+				    </button>
                 </div>
             </div>
         </div>
