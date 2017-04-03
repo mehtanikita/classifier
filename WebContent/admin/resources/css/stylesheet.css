@@ -198,3 +198,7 @@ hr
 	font-size: 130%;
 	vertical-align: middle;
 }
+#dataTable
+{
+	display: none;
+}

@@ -20,7 +20,9 @@
 	                <ul class="treeview-menu">
 	                    <li><a href="admin/dashboard.jsp"><i class="fa fa-home"></i> Home </a></li>
 	                    <li><a href="admin/view_articles.jsp"><i class="fa fa-file-text"></i> Articles </a></li>
-	                    <li><a href="admin/categories.jsp"><i class="fa fa-book"></i> Categories </a></li>
+	                    <li><a href="admin/view_words.jsp"><i class="fa fa-file-word-o"></i> Words </a></li>
+	                    <li><a href="admin/view_search.jsp"><i class="fa fa-search"></i> Search </a></li>
+	                    <!-- <li><a href="admin/categories.jsp"><i class="fa fa-book"></i> Categories </a></li> -->
 	                </ul>
 	            </li>
 	        </ul>

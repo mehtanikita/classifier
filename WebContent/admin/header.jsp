@@ -32,12 +32,17 @@
 	<script type="text/javascript" src="admin/resources/js/icheck.js"></script>
 	<script type="text/javascript" src="admin/resources/js/jquery.validate.js"></script>
 	<script type="text/javascript" src="admin/resources/js/dropzone.js"></script>
+	<script src="admin/resources/js/jquery.dataTables.js"></script>
+	<script src="admin/resources/js/dataTables.bootstrap.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.dropdown-toggle').dropdown();
 			$("#tips_btn").click(function(){ $(this).find(".label").fadeOut("slow");});
 			$("#notif_btn").click(function(){ $(this).find(".label").fadeOut("slow");	});
 			$("#friend_req_btn").click(function(){ $(this).find(".label").fadeOut("slow");	});
+			
+			$("#dataTable").show();
+	    	$("#dataTable").DataTable();
 		});
 	</script>
 	<script type="text/javascript" src="admin/resources/js/select2.js"></script>
@@ -45,28 +50,6 @@
 	<script type="text/javascript" src="admin/resources/others/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 	<script type="text/javascript" src="admin/resources/others/dist/js/app.min.js"></script>
 </head>
-<%!
-	public static String get_name(String name, HashMap<String,String> vars)
-	{
-		return vars.get(name).split(":")[0];
-	}
-	public static int get_value(String name, HashMap<String,String> vars)
-	{
-		return Integer.parseInt(vars.get(name).split(":")[1]);
-	}
-%>
-<%
-	HashMap<String,String> vars=new HashMap<String,String>();
-	
-	try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/variables.txt"))) {
-	    String line;
-	    String[] arr = new String[2];
-	    while ((line = br.readLine()) != null) {
-	    	arr = line.split(",");
-	    	vars.put(arr[0],arr[1]);
-	    }
-	}
-%>
 <body class="skin-blue sidebar-mini">
 	<div id="wrapper">
 		<header class="main-header"  style="position: fixed; width: 100%">
@@ -163,7 +146,7 @@
 							class="dropdown-toggle" data-toggle="dropdown"> <img
 								src="admin/resources/others/dist/img/user2-160x160.jpg"
 								class="user-image" alt="User Image"> <span
-								class="hidden-xs">Vortex</span>
+								class="hidden-xs">Classifier</span>
 						</a>
 							<ul class="dropdown-menu">
 								<!-- User image -->
@@ -171,7 +154,7 @@
 									src="admin/resources/others/dist/img/user2-160x160.jpg"
 									class="img-circle" alt="User Image">
 									<p>
-										Vortex
+										Classifier
 									</p>
 								</li>
 								<!-- Menu Footer-->

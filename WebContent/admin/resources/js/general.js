@@ -18,6 +18,7 @@ $(document).ready(function()
 	    }
 	});
 	url = window.location.href;
+	url = url.split("?")[0];
 	tmp = url.split('/');
 	controller = $.trim(tmp[tmp.length-2]);
 	module = $.trim(tmp[tmp.length-1]);

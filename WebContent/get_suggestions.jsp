@@ -4,7 +4,8 @@
 <%@include file="settings.jsp" %>
 <%
 	int limit = 5;
-	LinkedHashSet<String> words = new LinkedHashSet<String>();  
+	LinkedHashSet<String> words = new LinkedHashSet<String>();
+	
 	String q = request.getParameter("query");
 	q = q.trim();
 	
@@ -25,6 +26,7 @@
 			cat_id = r.getInt("id");
 		}
 	}
+	
 	if(q.indexOf(" ") > -1)
 	{
 		sent = true;
@@ -42,9 +44,22 @@
 			limit--;
 		} 
 	}
+	HashMap<String,String> hm=new HashMap<String,String>();
+	
+	try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/remove_words.txt"))) {
+	    String line;
+	    while ((line = br.readLine()) != null) {
+	    	if(line.equals(q))
+	    		words.add(line);
+	    }
+	}
 	if(limit > 0)
 	{
-		query = "SELECT * FROM tags WHERE (name = '"+q+"' OR name like '"+q+"%' OR name like '%"+q+"%' OR name like '"+q+"%') GROUP BY name ORDER BY CASE WHEN name = '"+q+"' THEN 1 WHEN name LIKE '"+q+"%' THEN 2 WHEN name LIKE '%"+q+"%' THEN 3 WHEN name LIKE '%"+q+"' THEN 4 ELSE 5 END, name ASC, cnt DESC LIMIT "+limit;
+		if(cat)
+			cat_str = " AND category_id = '"+cat_id+"'";
+		
+		query = "SELECT name FROM tags WHERE (name = '"+q+"' OR name like '"+q+"%' OR name like '%"+q+"%' OR name like '%"+q+"') ";
+		query += " UNION SELECT word FROM word_list WHERE (word = '"+q+"' OR word like '"+q+"%' OR word like '%"+q+"%' OR word like '%"+q+"') "+cat_str+"  ORDER BY CASE WHEN name = '"+q+"' THEN 1 WHEN name LIKE '"+q+"%' THEN 2 WHEN name LIKE '%"+q+"%' THEN 3 WHEN name LIKE '%"+q+"' THEN 4 ELSE 5 END, name ASC LIMIT "+limit;
 		r = stmt.executeQuery(query);
 		
 		while(r.next())
@@ -52,21 +67,18 @@
 			words.add(r.getString("name"));
 			limit--;
 		} 
-		if(limit > 0)
-		{
-			if(cat)
-				cat_str = " AND category_id = '"+cat_id+"'";
-			query = "SELECT * FROM word_list WHERE (word = '"+q+"' OR word like '"+q+"%' OR word like '%"+q+"%' OR word like '"+q+"%') "+cat_str+" GROUP BY word ORDER BY CASE WHEN word = '"+q+"' THEN 1 WHEN word LIKE '"+q+"%' THEN 2 WHEN word LIKE '%"+q+"%' THEN 3 WHEN word LIKE '%"+q+"' THEN 4 ELSE 5 END, word ASC LIMIT "+limit;
-			r = stmt.executeQuery(query);
-			
-			while(r.next())
-			{
-				words.add(r.getString("word"));
-			}
-		}
-		
 	}
-	
+	if(limit > 0 && sent)
+	{
+		query = "SELECT * FROM search WHERE search_string LIKE '%"+init+q+"%' GROUP BY search_string ORDER BY search_string";
+		r = stmt.executeQuery(query);
+		
+		while(r.next())
+		{
+			words.add(r.getString("search_string").replace(init,""));
+			limit--;
+		} 
+	}
 	Iterator<String> itr = words.iterator();
 	while(itr.hasNext())
 	{

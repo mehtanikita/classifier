@@ -31,8 +31,7 @@
 	query = "SELECT SUM(time_count) AS tm_cnt FROM articles WHERE time_when > DATE_SUB(CURDATE(), INTERVAL "+record_days+" DAY)";
 	r = stmt.executeQuery(query);
 	r.next();
-	int tm_cnt = r.getInt("tm_cnt");
-	tm_cnt /= 3600;
+	String tm_cnt = r.getInt("tm_cnt")/3600 + "h " + (r.getInt("tm_cnt")/60)%60 + "m";
 %>
 <div class="row">
    <div class="col-lg-3 col-xs-6">
@@ -45,7 +44,7 @@
        <div class="icon">
          <i class="ion ion-clipboard"></i>
        </div>
-       <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+       <a href="admin/view_articles.jsp?latest=true" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
      </div>
    </div><!-- ./col -->
    <div class="col-lg-3 col-xs-6">
@@ -58,7 +57,7 @@
        <div class="icon">
          <i class="ion ion-ios-search-strong"></i>
        </div>
-       <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+       <a href="admin/view_search.jsp?latest=true" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
      </div>
    </div><!-- ./col -->
    <div class="col-lg-3 col-xs-6">
@@ -79,7 +78,7 @@
      <div class="small-box bg-red">
        <div class="inner">
          <h3><%=tm_cnt %></h3>
-         <p>Hours Views</p>
+         <p>Read time</p>
        </div>
        <div class="icon">
          <i class="ion ion-ios-timer-outline"></i>
@@ -143,19 +142,19 @@
          <div class="box-body">
            <div class="row margin">
            		<p style="margin-bottom: 10px"><%=get_name("tag_weight",vars) %></p>
-                <input data-slider-id="red" var_name="tag_weight" data-slider-value="<%=get_value("tag_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-handle="round" />
+                <input data-slider-id="red" var_name="tag_weight" data-slider-value="<%=get_value("tag_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-handle="round" />
                 
                 <p style="margin-bottom: 10px"><%=get_name("score_weight",vars) %></p>
-                <input data-slider-id="blue" var_name="score_weight" data-slider-value="<%=get_value("score_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-handle="round" />
+                <input data-slider-id="blue" var_name="score_weight" data-slider-value="<%=get_value("score_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-handle="round" />
                 
                 <p style="margin-bottom: 10px"><%=get_name("view_weight",vars) %></p>
-                <input data-slider-id="green" var_name="view_weight" data-slider-value="<%=get_value("view_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-handle="round" />
+                <input data-slider-id="green" var_name="view_weight" data-slider-value="<%=get_value("view_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-handle="round" />
                 
                 <p style="margin-bottom: 10px"><%=get_name("time_weight",vars) %></p>
-                <input data-slider-id="yellow" var_name="time_weight" data-slider-value="<%=get_value("time_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-handle="round" />
+                <input data-slider-id="yellow" var_name="time_weight" data-slider-value="<%=get_value("time_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-handle="round" />
                 
                 <p style="margin-bottom: 10px"><%=get_name("review_weight",vars) %></p>
-                <input data-slider-id="purple" var_name="review_weight" data-slider-value="<%=get_value("review_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-handle="round" />
+                <input data-slider-id="purple" var_name="review_weight" data-slider-value="<%=get_value("review_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-handle="round" />
            </div>
          </div><!-- /.box-body -->
        </div><!-- /.box -->

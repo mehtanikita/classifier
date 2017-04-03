@@ -183,7 +183,7 @@ public boolean in_array(String[] arr, String targetValue)
 	
 		
 	//Save file
-	/* try {
+	try {
 		File file_2 = new File(fpath);
 		FileWriter fileWriter = new FileWriter(file_2);
 		fileWriter.write(txt);
@@ -191,7 +191,7 @@ public boolean in_array(String[] arr, String targetValue)
 		fileWriter.close(); 
 	}
 	catch (IOException e)
-	{ e.printStackTrace(); }  */
+	{ e.printStackTrace(); } 
 	
 	//Algo
 	int max_id = 0;
@@ -282,8 +282,8 @@ public boolean in_array(String[] arr, String targetValue)
 			update_article_sql += " ELSE articles END);";
 			if(tmp_for_cnt > 0)
 			{
-				//stmt.executeUpdate(update_cnt_sql);
-				//stmt.executeUpdate(update_article_sql);
+				stmt.executeUpdate(update_cnt_sql);
+				stmt.executeUpdate(update_article_sql);
 			}
 		}
 		
@@ -325,6 +325,8 @@ public boolean in_array(String[] arr, String targetValue)
 				int cat_cnt = 0;
 				String others = "";
 				String morris_json = "";
+				String[] classes = {"success","primary","danger","info","warning"};
+				int lp_cnt = 0;
 				for(Map.Entry m:score.entrySet())
 				{
 					tmp_id = (Integer)m.getKey();
@@ -334,22 +336,13 @@ public boolean in_array(String[] arr, String targetValue)
 						percent = ((double)tmp_score/(double)total_score)*100;
 						if(tmp_score > 0 && percent > 10 )
 						{
+							lp_cnt++;
 							if(!df.format(percent).equals(df.format(max_percent)))
 								others += tmp_id+":"+df.format(percent)+",";
 							cats += "'" + category.get(tmp_id) + "',";
 							scores += df.format(percent) + ",";
 							cat_cnt++;
-							if(percent > 80)
-								cls = "success";
-							else if(percent > 60)
-								cls = "primary";
-							else if(percent > 40)
-								cls = "info";
-							else if(percent > 20)
-								cls = "warning";
-							else
-								cls = "danger";
-							
+							cls = classes[lp_cnt%5];
 							morris_json += "{label: \""+category.get(tmp_id)+"\", value: "+df.format(percent)+"},";
 					
 				%>
@@ -439,7 +432,6 @@ public boolean in_array(String[] arr, String targetValue)
 				count = 10;
 			int mcnt=0;
 			String tag = "";
-			String[] classes = {"success","primary","danger","info","warning"};
 			for (Object e : a)
 			{
 				if(count>0)
@@ -448,7 +440,7 @@ public boolean in_array(String[] arr, String targetValue)
 					mcnt = ((Map.Entry<String, Integer>) e).getValue();
 					tags += "'"+tag+"',";
 					s_tags += tag+","; 
-					//stmt.executeUpdate("INSERT into tags VALUES ('','"+tag+"',"+id+",'"+mcnt+"')");
+					stmt.executeUpdate("INSERT into tags VALUES ('','"+tag+"',"+id+",'"+mcnt+"')");
 				%>
 					<div class="tag">
 						<a href="explore_tags.jsp?t=<%=tag%>" target="_blank" title="Explore">
@@ -466,7 +458,7 @@ public boolean in_array(String[] arr, String targetValue)
 				tags.replaceAll("\'","\\\\'");
 				s_tags = s_tags.substring(0, s_tags.length()-1);
 			}
-			//stmt.executeUpdate("INSERT into articles VALUES ("+id+",'"+title+"','"+name+"',"+max_id+",'"+df.format(max_percent)+"','0','0','0',\""+tags+"\",'"+s_tags+"','"+others+"')");
+			stmt.executeUpdate("INSERT into articles VALUES ("+id+",'"+title+"','"+name+"',"+max_id+",'"+df.format(max_percent)+"','0','0','0',\""+tags+"\",'"+s_tags+"','"+others+"','')");
 		}
 		catch(Exception e)
 		{ System.out.println(e); e.printStackTrace(); }

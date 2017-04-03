@@ -1,8 +1,8 @@
-time_weight,Time Count Weight:100
-tag_weight,Tag Count Weight:50
-score_weight,Score Weight:0
-articles_per_page,Articles Per Page:25
-view_weight,View Count Weight:30
-review_weight,Review Score Weight:30
-record_days,Number of previous days:49
-abstract_size,Size of Abstract:1000
+time_weight,Time Count Weight:10
+tag_weight,Tag Count Weight:15
+score_weight,Score Weight:10
+articles_per_page,Articles Per Page:3
+view_weight,View Count Weight:10
+review_weight,Review Score Weight:10
+record_days,Number of previous days:24
+abstract_size,Size of Abstract:300
