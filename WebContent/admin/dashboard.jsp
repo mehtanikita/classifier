@@ -70,7 +70,7 @@
        <div class="icon">
          <i class="ion ion-ios-star-half"></i>
        </div>
-       <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+       <a href="admin/view_ratings.jsp?latest=true" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
      </div>
    </div><!-- ./col -->
    <div class="col-lg-3 col-xs-6">
@@ -83,7 +83,7 @@
        <div class="icon">
          <i class="ion ion-ios-timer-outline"></i>
        </div>
-       <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+       <a href="admin/view_articles.jsp?latest=true" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
      </div>
    </div><!-- ./col -->
  </div><!-- /.row -->
@@ -106,8 +106,6 @@
 	r = stmt.executeQuery(query);
  %>
  <script type="text/javascript">
- 	 
- 	 console.log()
 	 var line = new Morris.Line({
 	     element: 'line-chart',
 	     resize: true,
@@ -174,6 +172,12 @@
                 
                 <p style="margin-bottom: 10px"><%=get_name("abstract_size",vars) %></p>
                 <input data-slider-id="green" var_name="abstract_size" data-slider-value="<%=get_value("abstract_size",vars)%>" type="text" class="slider form-control" data-slider-min="100" data-slider-max="1000" data-slider-step="20" data-slider-handle="round" />
+                
+                <p style="margin-bottom: 10px"><%=get_name("word_weight",vars) %></p>
+                <input data-slider-id="yellow" var_name="word_weight" data-slider-value="<%=get_value("word_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-handle="round" />
+                
+                <p style="margin-bottom: 10px"><%=get_name("freq_weight",vars) %></p>
+                <input data-slider-id="purple" var_name="freq_weight" data-slider-value="<%=get_value("freq_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="50" data-slider-step="20" data-slider-handle="round" />
                 
            </div>
          </div><!-- /.box-body -->

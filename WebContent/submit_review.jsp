@@ -61,7 +61,7 @@
 			tmp_score = 100 - tmp_score;
 		score = df.format(tmp_score);
 		
-		String query = "INSERT INTO reviews(article_id,name,text,type,score,time_when) VALUES ("+a_id+",'"+name+"','"+text+"','"+type+"',"+score+",'')";
+		String query = "INSERT INTO reviews(article_id,name,text,type,score) VALUES ("+a_id+",'"+name+"','"+text+"','"+type+"',"+score+")";
 		stmt.executeUpdate(query);
 		
 		query = "SELECT COUNT(score) AS cnt, ROUND(SUM(score),2) AS total_score FROM reviews";

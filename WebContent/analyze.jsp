@@ -12,6 +12,6 @@
 		stmt.executeUpdate("UPDATE search set click_cnt = click_cnt + 1 WHERE search_string = '"+q+"' AND article_id = "+a_id);
 	else
 		stmt.executeUpdate("INSERT INTO search(search_string, article_id, click_cnt) VALUES('"+q+"','"+a_id+"','1')");
-	
+	session.setAttribute("search",q);
 	response.sendRedirect(return_url);
 %>

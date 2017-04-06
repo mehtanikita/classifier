@@ -55,6 +55,7 @@
 				String r_score = "";
 				String s_tags = "";
 				String path = System.getProperty("user.dir")+"/";
+				String time_when = "";
 				Statement st = c.createStatement();
 				if(total_articles != 0){
 				while(r.next())
@@ -71,6 +72,7 @@
 					s_tags = s_tags.replace(s,"");
 					s_tags = s_tags.replace(",,",",");
 					String[] tags = {};
+					time_when = r2.getString("time_when");
 					if(s_tags.length() > 0)
 					{
 						if(s_tags.charAt(0) == ',')
@@ -155,26 +157,34 @@
 					str = str.replaceAll("[^\\x00-\\x7F]", "");
 					str = str.replace("?", "");
 			%>
-				<div class="result">
-					<div class="result_head">
-						<a href="view_article.jsp?i=<%=a_id %>" class="text-<%=cls %>"><%=title %></a>
+				<div class="col-md-12">
+					<div class="box box-primary">
+				       <div class="box-header with-border">
+				          <div class="col-md-10 lr0pad">
+					         <h3 class="box-title">
+					         	<a href="view_article.jsp?i=<%=a_id %>" class="text-navy"><%=title %></a>
+					         </h3>
+				           </div>
+				           <span class="time pull-right"><i class="fa fa-clock-o"></i> <%= get_time_diff(time_when)%></span>
+				       </div>
+				    
+					    <div class="box-body with-border">
+					    	<p class="result_str"><%=str%></p>
+					    </div>
+					    <%if(tags.length > 0) { %>
+							<div class="box-body with-border">
+								<% for(String t : tags){%>  
+									<a href="explore_tags.jsp?t=<%=t%>" title="Explore">
+										<span class="label label-default" title="<%=cls%>"><%=t%></span>
+									</a>
+								<%}%>
+							</div>
+						<%}%>
+						<div class="box-body">
+					    	<p>Average user ratings: <b><%=r_score%>%</b></p>
+					    </div>
 					</div>
-					<div class="result_desc">
-						<p class="result_str"><%=str%></p>
-					</div>
-					<%if(tags.length > 0) { %>
-					<div class="result_desc">
-					<% for(String t : tags){%>  
-						<a href="explore_tags.jsp?t=<%=t%>" title="Explore">
-							<span class="label label-<%=cls %>" title="<%=cls%>"><%=t%></span>
-						</a>
-					<%}%>
-					</div>
-					<%}%>
-					<div class="result_desc">
-						<p>Average user ratings: <b><%=r_score%>%</b></p>
-					</div>
-				</div>
+			    </div>
 			<%
 					loop_cnt++;
 					}

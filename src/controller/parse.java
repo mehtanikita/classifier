@@ -11,9 +11,10 @@ public class parse {
 	public static void main(String args[]) throws Exception
 	{
 		boolean debug = true;
-		boolean oxf = true;
-		int category_id = 10;
-		int pages = 1;
+		boolean oxf = false;
+		boolean onelook = false;
+		int category_id = 1;
+		int pages = 5;
 		
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection conn = DriverManager.getConnection ("jdbc:mysql://localhost/test", "root", "");
@@ -47,7 +48,7 @@ public class parse {
 		{
 			for(int i = 1; i <= pages; i++)
 			{
-				l = "http://www.oxfordreference.com/view/10.1093/acref/9780199234899.001.0001/acref-9780199234899?btog=chap&hide=true&page="+i+"&pageSize=100&skipEditions=true&sort=titlesort&source=%2F10.1093%2Facref%2F9780199234899.001.0001%2Facref-9780199234899";
+				l = "http://www.oxfordreference.com/view/10.1093/acref/9780199679393.001.0001/acref-9780199679393?btog=chap&hide=true&page="+i+"&pageSize=100&skipEditions=true&sort=titlesort&source=%2F10.1093%2Facref%2F9780199679393.001.0001%2Facref-9780199679393";
 				links.add(l);
 			}
 			List<String> ws = new ArrayList<String>();
@@ -62,7 +63,7 @@ public class parse {
 					s = refine(word.getText());
 					if(is_clean(s,hm))
 					{
-						//System.out.println(s);
+						System.out.println(s);
 				        if(!debug)
 				        {
 				        	stmt.execute("INSERT into word_list(category_id,word,count,articles) VALUES ('"+category_id+"','"+s+"','0','')");
@@ -71,7 +72,7 @@ public class parse {
 				}
 			}
 		}
-		else
+		else if(onelook)
 		{
 			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=1");
 			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=101");
@@ -107,7 +108,38 @@ public class parse {
 			}
 			System.out.println(ws.size());
 		}
-		
+		else
+		{
+			links.add("http://www.enchantedlearning.com/wordlist/sports.shtml");
+			List<String> ws = new ArrayList<String>();
+			for(String link : links)
+			{
+				userAgent.visit(link);
+				System.out.println(userAgent.doc.getText());
+				Elements words = userAgent.doc.findFirst("<table cellpadding=2>").findEvery("<td>");
+				String s;
+				
+				for(Element word : words )
+				{
+					System.out.println(word.getText());
+					s = refine(word.getText());
+					if(!is_clean(s,hm))
+					{
+						ws.add(s);
+					}
+				}
+			}
+			Collections.sort(ws);
+			for(String p : ws)
+			{
+				System.out.println(p);
+				if(!debug)
+		        {
+					stmt.execute("INSERT into word_list(category_id,word,count,articles) VALUES ('"+category_id+"','"+p+"','0','')");
+		        }
+			}
+			System.out.println(ws.size());
+		}
 		System.out.println("Done");
 		stmt.close(); 
 		conn.close();

@@ -22,7 +22,9 @@
 	                    <li><a href="admin/view_articles.jsp"><i class="fa fa-file-text"></i> Articles </a></li>
 	                    <li><a href="admin/view_words.jsp"><i class="fa fa-file-word-o"></i> Words </a></li>
 	                    <li><a href="admin/view_search.jsp"><i class="fa fa-search"></i> Search </a></li>
-	                    <!-- <li><a href="admin/categories.jsp"><i class="fa fa-book"></i> Categories </a></li> -->
+	                    <li><a href="admin/view_ratings.jsp"><i class="fa fa-star"></i> Reviews </a></li>
+	                    <li><a href="admin/view_categories.jsp"><i class="fa fa-book"></i> Categories </a></li>
+	                    <li><a href="admin/add_words.jsp"><i class="fa fa-plus"></i> Add Words </a></li>
 	                </ul>
 	            </li>
 	        </ul>

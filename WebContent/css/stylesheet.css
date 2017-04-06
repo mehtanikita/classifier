@@ -171,6 +171,7 @@ input:-webkit-autofill
 .label-info .badge{color: #5bc0de;}
 .label-warning .badge{color: #f0ad4e;}
 .label-danger .badge{color: #d9534f;}
+.label-default .badge{color: #000;}
 hr
 {
 	display: block;
@@ -190,12 +191,19 @@ hr
 }
 #main_div
 {
-	background: #eee;
+	background: #ecf0f5;
 	margin-top: 50px;
 	padding: 10px;
 	font-weight: normal;
 	min-height: 500px;
 	overflow: auto;
+}
+.box-body.with-border {
+    border-bottom: 1px solid #f4f4f4;
+}
+.result_str strong
+{
+	font-size: 16px;
 }
 #footer
 {

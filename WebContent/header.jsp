@@ -13,8 +13,11 @@
 	<title>Classifier</title>
 	<link rel="shortcut icon" type="image/png" href="favicon.png"/>
 	<link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="admin/resources/css/font-awesome.css">
+	<link rel="stylesheet" type="text/css" href="admin/resources/css/ionicons.css">
+	<link rel="stylesheet" type="text/css" href="admin/resources/others/dist/css/AdminLTE.min.css">
+	<link rel="stylesheet" type="text/css" href="admin/resources/others/dist/css/skins/_all-skins.min.css">
 	<link href="css/landing-page.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 	<link href="css/stylesheet.css" rel="stylesheet" type="text/css"/>
 	
@@ -22,24 +25,6 @@
 	<script src="js/bootstrap.js" type="text/javascript"></script>
 	<script src="js/general.js" type="text/javascript"></script>
 </head>
-<%!
-	public static int get_value(String name, HashMap<String,String> vars)
-	{
-		return Integer.parseInt(vars.get(name).split(":")[1]);
-	}
-%>
-<%
-	HashMap<String,String> vars=new HashMap<String,String>();
-	
-	try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/variables.txt"))) {
-	    String line;
-	    String[] arr = new String[2];
-	    while ((line = br.readLine()) != null) {
-	    	arr = line.split(",");
-	    	vars.put(arr[0],arr[1]);
-	    }
-	}
-%>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
         <div class="container topnav">

@@ -12,14 +12,14 @@ button
 #upload_file_div
 {
 	background: #fff;
-	border: 2px solid black;
+	border: 1px solid #ccc;
 	height: 150px;
 	cursor: pointer;
 }
-#upload_file_div h1
+#upload_file_div h2
 {
 	text-align: center;
-	margin-top: 3.5%;
+	margin-top: 5%;
 }
 #file_upload
 {

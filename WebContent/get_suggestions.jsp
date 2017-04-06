@@ -68,14 +68,17 @@
 			limit--;
 		} 
 	}
-	if(limit > 0 && sent)
+	if(limit > 0)
 	{
-		query = "SELECT * FROM search WHERE search_string LIKE '%"+init+q+"%' GROUP BY search_string ORDER BY search_string";
+		query = "SELECT * FROM search WHERE search_string LIKE '"+init+q+"%' GROUP BY search_string ORDER BY search_string LIMIT " + limit;
 		r = stmt.executeQuery(query);
 		
 		while(r.next())
 		{
-			words.add(r.getString("search_string").replace(init,""));
+			if(sent)
+				words.add(r.getString("search_string").replace(init,""));
+			else
+				words.add(r.getString("search_string"));
 			limit--;
 		} 
 	}

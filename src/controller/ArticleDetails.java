@@ -8,8 +8,9 @@ public class ArticleDetails {
 	public String abstr;
 	public String r_score;
 	public String[] tags;
+	public String time_when;
 	
-	public ArticleDetails(Integer id,String title, String name, String abstr, String r_score, String[] tags)
+	public ArticleDetails(Integer id,String title, String name, String abstr, String r_score, String[] tags, String time_when)
 	{
 		this.id = id;
 		this.title = title;
@@ -17,6 +18,7 @@ public class ArticleDetails {
 		this.abstr = abstr;
 		this.r_score = r_score;
 		this.tags = tags;
+		this.time_when = time_when;
 	}
 	public String pr()
 	{

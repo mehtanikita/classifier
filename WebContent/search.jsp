@@ -171,7 +171,7 @@
 		}
 		else
 			response.sendRedirect("index.jsp");
-
+		session.setAttribute("search","");
 		String s = request.getParameter("q");
 		int articles_per_page = get_value("articles_per_page",vars);
 		int no_of_articles = 0;
@@ -316,7 +316,7 @@
 			fis.read(data);
 			fis.close();
 			
-			ar = new ArticleDetails(r.getInt("id"), r.getString("title"), r.getString("name"), get_abstract(data,s,no_of_chars,left_span,right_span), r.getString("review_score"), tags);
+			ar = new ArticleDetails(r.getInt("id"), r.getString("title"), r.getString("name"), get_abstract(data,s,no_of_chars,left_span,right_span), r.getString("review_score"), tags, r.getString("time_when"));
 			articles.put(a_cnt, ar);
 			
 		}
@@ -396,26 +396,35 @@
 			%>
 			<%
 				for(int i=1; i<=a_cnt; i++){ ar = articles.get(i); cls = classes[i%5]; %>
-				<div class="result">
-					<div class="result_head">
-						<a href="view_article.jsp?i=<%=ar.id %>" aid="<%=ar.id%>" class="article_link text-<%=cls %>"><%=ar.title %></a>
+				<div class="col-md-12">
+					<div class="box box-primary">
+				       <div class="box-header with-border">
+				       	 <div class="col-md-10 lr0pad">
+					         <h3 class="box-title">
+					         	<a href="view_article.jsp?i=<%=ar.id %>" aid="<%=ar.id%>" class="article_link text-navy"><%=ar.title %></a>
+					         </h3>
+				         </div>
+				         <span class="time pull-right"><i class="fa fa-clock-o"></i> <%= get_time_diff(ar.time_when)%></span>
+				       </div>
+				    
+					    <div class="box-body with-border">
+					    	<p class="result_str"><%= ar.abstr %></p>
+					    </div>
+					    <%if(ar.tags.length > 0) { %>
+							<div class="box-body with-border">
+								<% for(String t : ar.tags){%>  
+									<a href="explore_tags.jsp?t=<%=t%>" title="Explore">
+										<span class="label label-default" title="<%=cls%>"><%=t%></span>
+									</a>
+								<%}%>
+							</div>
+						<%}%>
+						<div class="box-body">
+					    	<p>Average user ratings: <b><%=ar.r_score%>%</b></p>
+					    </div>
 					</div>
-					<div class="result_desc">
-						<p class="result_str"><%= ar.abstr %></p>
-					</div>
-					<%if(ar.tags.length > 0) { %>
-					<div class="result_desc">
-					<% for(String t : ar.tags){%>  
-						<a href="explore_tags.jsp?t=<%=t%>" title="Explore">
-							<span class="label label-<%=cls %>" title="<%=cls%>"><%=t%></span>
-						</a>
-					<%}%>
-					</div>
-					<%}%>
-					<div class="result_desc">
-						<p>Average user ratings: <b><%=ar.r_score%>%</b></p>
-					</div>
-				</div>
+			    </div>
+				
 			<%} %>
 			</div>
 		

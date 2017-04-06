@@ -9,12 +9,17 @@
     padding: 5px 15px;
     text-align: center;
 }
+#article_head .box-title
+{
+	font-size: 25px;
+}
 #article_body
 {
 	border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     overflow: hidden;
-    padding: 10px 30px;
+    padding: 20px 30px 15px 30px;
+    text-align: justify;
     font-size: 18px;
     font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
 }
@@ -23,45 +28,38 @@
 	text-align: center;
 	padding: 15px 15px;
 }
+#tags_div
+{
+	padding: 15px 10px;
+}
 #tags_div .label
 {
 	font-size: 18px;
 	margin: 0px auto;
-	
+	border-radius: .25em !important;
+}
+.tag
+{
+	display: inline-block;
+	margin-bottom: 20px !important;
+	padding: 0px 5px;
 }
 #write_review
 {
 	padding: 15px 10px;
 	overflow: auto;
 }
-#all_reviews
-{
-	background: inherit;
-	padding: 0px;
-	overflow: auto;
-	border: 2px solid white;
-}
-#all_reviews_head
-{
-	background: #fff;
-	font-size: 30px;
-	font-weight: 500;
-	text-align: center;
-	padding: 10px 2px;
-}
 #sort_div
 {
 	background: #fff;
 	margin: 0px;
 }
-.user_review
-{
-	background: #fff;
-	box-shadow: -1px 1px 1px gray;
-	margin-top: 7px;
-}
 .knob_div
 {
-	margin-top: 2%;
-	margin-bottom: 2%;
 }
+.border-blue{border-top: 3px solid #3c8dbc;}
+.border-lblue{border-top: 3px solid #00c0ef;}
+.border-green{border-top: 3px solid #00a65a;}
+.border-yellow{border-top: 3px solid #f39c12;}
+.border-red{border-top: 3px solid #dd4b39;}
+.border-default{border-top: 3px solid #d2d6de;}
