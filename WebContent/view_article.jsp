@@ -15,8 +15,10 @@
 		String a_id = request.getParameter("i");
 		ResultSet r = stmt.executeQuery("SELECT * FROM articles WHERE id='"+a_id+"'");
 		r.next();
+		int cat_id = r.getInt("category_id");
 		String title = r.getString("title");
 		String a_name = r.getString("name");
+		String q_tags = r.getString("tags");
 		String s_tags = r.getString("s_tags");
 		String path = System.getProperty("user.dir")+"/";
 		String time_when = r.getString("time_when");
@@ -30,7 +32,7 @@
 		
 		a_name = a_name.replace(".txt","");
 		String str = new String(data, "UTF-8");
-		str = str.replaceAll("[^\\x00-\\x7F]", "");
+		str = decode(str);
 		str = str.replaceAll("\\n","<br/>");
 	%>
 	<link href="css/view_article.css" rel="stylesheet" type="text/css"/>
@@ -60,15 +62,55 @@
 				<%}%>
 	           </div><!-- /.box-footer -->
 	         </div>
-			<div id="article">
-				<div >
-					<p class="text-center"><a href=""></a></p>
+		</div>
+		<div class="clearfix"></div><br/>
+		<%
+			int score_weight = get_value("score_weight",vars);
+			int view_weight = get_value("view_weight",vars);
+			int time_weight = get_value("time_weight",vars);
+			int review_weight = get_value("review_weight",vars);
+			
+			r = stmt.executeQuery("SELECT SUM(view_count) AS total_views, SUM(time_count) AS total_time FROM articles");
+			r.next();
+			int total_views = r.getInt("total_views");
+			int total_time= r.getInt("total_time");
+			
+			String order_logic = " ORDER BY (score * "+score_weight+")+((view_count*100/"+total_views+")*"+view_weight+")+((time_count*100/"+total_time+")*"+time_weight+")+(review_score*"+review_weight+") DESC";
+			String r_sql = "SELECT * FROM articles WHERE id IN (SELECT article_id FROM search WHERE search_string IN (SELECT search_string FROM `search` WHERE article_id = "+a_id+") AND article_id != "+a_id+") UNION SELECT * FROM articles WHERE id IN (SELECT article_id FROM tags WHERE name IN ("+q_tags+")) and id != "+a_id+" UNION SELECT * FROM articles WHERE category_id = " + cat_id + " AND id != "+a_id + order_logic + "";
+			r = stmt.executeQuery(r_sql);
+			String r_title;
+			int max_title_len = 100;
+		%>
+		<div class="col-md-8 col-md-offset-2">
+			<div class="box box-default">
+				<div class="box-header text-center with-border">
+					<h3 class="box-title">Related Articles</h3>
 				</div>
-				<div >
-					
-				</div>
-				<div >
-				
+				<div class="box-body">
+					<ul class="timeline">
+					<% 
+						String[] r_classes = {"navy","default"};
+						String r_cls;
+						int rl_cnt = -1;
+						while(r.next())
+						{ 
+							rl_cnt++;
+							r_title = (r.getString("title").length() > max_title_len) ? r.getString("title").substring(0, max_title_len)+"..." : r.getString("title");
+							r_cls = r_classes[rl_cnt%r_classes.length];
+							
+					%>
+						<li class="user_review">
+		                  <i class="fa fa-thumb-tack bg-<%=r_cls%>"></i>
+		                  <div class="timeline-item border-default">
+		                    <h4 class="timeline-header">
+								<a href="view_article.jsp?i=<%= r.getInt("id")%>">
+									<span class="text-navy"><%=r_title %></span>
+								</a>
+							</h4>
+		                  </div>
+		                </li>	
+					<%}%>
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -154,10 +196,14 @@
 						int cnt = 0;
 						String[] classes = {"blue","default"};
 						String cls;
+						String txt;
 						while(r.next()){
 							cls = classes[cnt%classes.length];
 							cnt++;
 							score = r.getDouble("score");
+							txt = r.getString("text");
+							txt = decode(txt);
+							txt = txt.replaceAll("\\n","<br/>");
 							if(score > 75)
 								clr = "#00a65a";
 							else if(score > 50)
@@ -172,7 +218,7 @@
 			                    <span class="time"><i class="fa fa-clock-o"></i> <%= get_time_diff(r.getString("time_when"))%></span>
 			                    <h4 class="timeline-header"><i class="text-muted">Posted by </i><%=r.getString("name") %></h4>
 			                    <div class="timeline-body" style="overflow: auto">
-			                      <p><%=r.getString("text") %>
+			                      <p><%=txt %>
 				                      <span class="knob_div pull-right text-center">
 				                      	<input type="text" class="knob" value="<%=r.getString("score") %>" data-width="50" data-height="50" data-fgColor="<%=clr %>" data-skin="tron"  data-thickness="0.2" data-readonly="true" readonly="readonly">
 				                      </span>
@@ -212,7 +258,8 @@
 				var str = "";
 				for(w in my_arr)
 				{
-					str += my_arr[w]+"|";
+					if(stop_words.indexOf(my_arr[w]) == -1)
+						str += my_arr[w]+"|";
 				}
 				str = str.substring(0,str.length-1);
 				var regex = new RegExp(str,"gi");

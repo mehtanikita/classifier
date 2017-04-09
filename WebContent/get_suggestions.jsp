@@ -49,8 +49,11 @@
 	try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/remove_words.txt"))) {
 	    String line;
 	    while ((line = br.readLine()) != null) {
-	    	if(line.equals(q))
+	    	if(line.equals(q) && !words.contains(q))
+	    	{
 	    		words.add(line);
+	    		limit--;
+	    	}
 	    }
 	}
 	if(limit > 0)
@@ -59,29 +62,19 @@
 			cat_str = " AND category_id = '"+cat_id+"'";
 		
 		query = "SELECT name FROM tags WHERE (name = '"+q+"' OR name like '"+q+"%' OR name like '%"+q+"%' OR name like '%"+q+"') ";
+		query += " UNION SELECT search_string FROM search WHERE (search_string = '"+q+"' OR search_string like '"+q+"%' OR search_string like '%"+q+"%' OR search_string like '%"+q+"')";
 		query += " UNION SELECT word FROM word_list WHERE (word = '"+q+"' OR word like '"+q+"%' OR word like '%"+q+"%' OR word like '%"+q+"') "+cat_str+"  ORDER BY CASE WHEN name = '"+q+"' THEN 1 WHEN name LIKE '"+q+"%' THEN 2 WHEN name LIKE '%"+q+"%' THEN 3 WHEN name LIKE '%"+q+"' THEN 4 ELSE 5 END, name ASC LIMIT "+limit;
 		r = stmt.executeQuery(query);
-		
-		while(r.next())
-		{
-			words.add(r.getString("name"));
-			limit--;
-		} 
-	}
-	if(limit > 0)
-	{
-		query = "SELECT * FROM search WHERE search_string LIKE '"+init+q+"%' GROUP BY search_string ORDER BY search_string LIMIT " + limit;
-		r = stmt.executeQuery(query);
-		
 		while(r.next())
 		{
 			if(sent)
-				words.add(r.getString("search_string").replace(init,""));
+				words.add(r.getString("name").replace(init,""));
 			else
-				words.add(r.getString("search_string"));
+				words.add(r.getString("name"));
 			limit--;
 		} 
 	}
+	
 	Iterator<String> itr = words.iterator();
 	while(itr.hasNext())
 	{

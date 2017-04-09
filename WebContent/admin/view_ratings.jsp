@@ -63,7 +63,9 @@
          		text = r.getString("reviews.text");
          		if(text.length() > review_len)
          			text = text.substring(0,review_len)+"...";
-         		if(r.getString("type").equals("Positive"))
+         		text = decode(text);
+         		text = text.replaceAll("\\n","<br/>");
+         		if(r.getString("type").equals("positive"))
          			cls = "success";
          		else
          			cls = "danger";

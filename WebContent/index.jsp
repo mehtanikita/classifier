@@ -14,7 +14,7 @@
                         <h1>Classifier</h1><br/>
                         <form action="search.jsp">
 	                       	<div id="search_div">
-	                       		<input type="text" name="q" id="search_box" autocomplete="new-password" placeholder="What are you looking for?" required oninvalid="this.setCustomValidity('Please enter search string')"/>
+	                       		<input type="text" name="q" id="search_box" autofocus autocomplete="new-password" placeholder="What are you looking for?" title="Search here.." required oninvalid="this.setCustomValidity('Please enter search string')"/>
 	                       		<div id="search_list"></div>
 	                       	</div>
 							<button id="search_button" class="btn">
@@ -44,7 +44,7 @@
 		ResultSet r;
 		String search_q;
 	%>
-        <div class="container">
+        <div class="container" id="trending">
             <div class="row">
                 <div class="col-md-12">
                     <hr class="section-heading-spacer">
@@ -99,7 +99,7 @@
 
     </div>
     <!-- /.content-section-a -->
-
+	
     <div class="content-section-b">
 
         <div class="container">

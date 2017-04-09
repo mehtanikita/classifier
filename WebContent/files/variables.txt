@@ -1,10 +1,10 @@
-time_weight,Time Count Weight:10
+time_weight,Time Count Weight:20
 tag_weight,Tag Count Weight:15
-score_weight,Score Weight:10
+score_weight,Score Weight:3
 articles_per_page,Articles Per Page:3
-view_weight,View Count Weight:10
-freq_weight,Category word frequency weight:20
+view_weight,View Count Weight:3
+freq_weight,Category word frequency weight:40
 review_weight,Review Score Weight:10
-record_days,Number of previous days:24
-word_weight,Category word count weight:20
+record_days,Number of previous days:5
+word_weight,Category word count weight:17
 abstract_size,Size of Abstract:420

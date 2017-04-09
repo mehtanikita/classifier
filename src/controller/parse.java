@@ -110,22 +110,26 @@ public class parse {
 		}
 		else
 		{
+			category_id = 1;
 			links.add("http://www.enchantedlearning.com/wordlist/sports.shtml");
 			List<String> ws = new ArrayList<String>();
 			for(String link : links)
 			{
 				userAgent.visit(link);
-				System.out.println(userAgent.doc.getText());
-				Elements words = userAgent.doc.findFirst("<table cellpadding=2>").findEvery("<td>");
+				System.out.println(userAgent.doc.findFirst("<table>").nextSiblingElement().nextSiblingElement().nextSiblingElement().getText());
+				Elements words = userAgent.doc.findFirst("<TABLE CELLPADDING='2'>").findEvery("<tr>");
 				String s;
-				
-				for(Element word : words )
+				for(Element tr : words )
 				{
-					System.out.println(word.getText());
-					s = refine(word.getText());
-					if(!is_clean(s,hm))
+					Elements td = tr.findEvery("<td>");
+					for(Element word : td )
 					{
-						ws.add(s);
+						System.out.println(word.getText());
+						s = refine(word.getText());
+						if(!is_clean(s,hm))
+						{
+							ws.add(s);
+						}
 					}
 				}
 			}

@@ -3,7 +3,7 @@
 <%@ page import="org.apache.commons.lang3.*,java.util.*,java.io.*,controller.ArticleDetails" %>
 <%@include file="header.jsp" %>
 	<%!
-		public String get_abstract(byte[] data, String q, int no_of_chars, int left_span, int right_span)
+		public String get_abstract(byte[] data, String q, int no_of_chars, int left_span, int right_span, HashMap<String,String> stop_words)
 		{
 			String str = "";
 			String tmp_str = "";
@@ -25,7 +25,7 @@
 			
 			try
 			{
-				String main_str = new String(data, "UTF-8").replaceAll("[^\\x00-\\x7F]", "");
+				String main_str = decode(new String(data, "UTF-8"));
 				String rf_str = main_str.toLowerCase();
 				
 				while((n_splits <= spaces+1))
@@ -64,6 +64,8 @@
 				while((lastIndex != -1) && (str.length() < no_of_chars))
 				{
 					w = words.get(list_index);
+					if(stop_words.get(w) != null)
+						continue;
 					lastIndex = rf_str.indexOf(w,lastIndex);
 				    if(lastIndex != -1)
 				    {
@@ -155,12 +157,13 @@
 				}
 				if(str.length() < no_of_chars)
 					str += main_str.substring(0,no_of_chars - str.length()) + "...";
-
-				str = str.replaceAll("[^\\x00-\\x7F]", "");
-				str = str.replace("?", "");
+				return str;
 			}
-			catch(Exception e){}
-			return str;
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return "";
 		}
 	%>
 	<% 
@@ -299,15 +302,17 @@
 			a_cnt++;
 			s_tags = r.getString("s_tags");
 			s_tags = s_tags.trim();
-			s_tags = s_tags.replace(s,"");
-			s_tags = s_tags.replace(",,",",");
+			String[] t_tags = s_tags.split(",");
+			s_tags = "";
+			for(String t : t_tags)
+			{
+				if(t.indexOf(s) == -1)
+					s_tags += t+",";
+			}
 			String[] tags = {};
 			if(s_tags.length() > 0)
 			{
-				if(s_tags.charAt(0) == ',')
-					s_tags = s_tags.substring(1,s_tags.length());
-				if(s_tags.charAt(s_tags.length()-1) == ',')
-					s_tags = s_tags.substring(0,s_tags.length()-1);
+				s_tags = s_tags.substring(0,s_tags.length()-1);
 				tags = s_tags.split(",");
 			}
 			File file = new File(path+r.getString("name"));
@@ -316,7 +321,7 @@
 			fis.read(data);
 			fis.close();
 			
-			ar = new ArticleDetails(r.getInt("id"), r.getString("title"), r.getString("name"), get_abstract(data,s,no_of_chars,left_span,right_span), r.getString("review_score"), tags, r.getString("time_when"));
+			ar = new ArticleDetails(r.getInt("id"), r.getString("title"), r.getString("name"), get_abstract(data,s,no_of_chars,left_span,right_span,stop_words), r.getString("review_score"), tags, r.getString("time_when"));
 			articles.put(a_cnt, ar);
 			
 		}
@@ -509,9 +514,12 @@
 					}
 					for(w in words)
 					{
-						var regex = new RegExp(words[w],"gi");
-						tmp_txt = $(this).html().replace(regex, '<strong>$&</strong>');
-						$(this).html(tmp_txt);
+						if(stop_words.indexOf(words[w]) == -1)
+						{
+							var regex = new RegExp(words[w],"gi");
+							tmp_txt = $(this).html().replace(regex, '<strong>$&</strong>');
+							$(this).html(tmp_txt);
+						}
 					}
 					$(document).on("click",".article_link",function(e)
 					{

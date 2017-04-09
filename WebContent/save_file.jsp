@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="java.net.*,java.util.Map.Entry,java.util.stream.Collectors,java.util.regex.Pattern,java.lang.*, java.text.DecimalFormat, java.math.*, controller.WordDetails, com.jaunt.*" %>
+<%@ page import="java.net.*,java.util.Map.Entry,java.util.stream.Collectors,java.util.regex.Pattern,java.lang.*,java.text.DecimalFormat, java.math.*, controller.WordDetails, com.jaunt.*" %>
 <%@ page import="org.apache.commons.fileupload.*" %>
 <%@ page import="org.apache.commons.fileupload.disk.*" %>
 <%@ page import="org.apache.commons.fileupload.servlet.*" %>
@@ -11,13 +11,14 @@
 <%!
 public String get_title(String txt, int len)
 {
+	if(true)
+		return "Title";
 	String USER_AGENT = "Mozilla/5.0";
 	String tmp_title = "";
 	
 	try{
 		String text = URLEncoder.encode(txt, "UTF-8");
 		String url = "http://freesummarizer.com/";
-		
 		
 		URL obj = new URL(url);
 		HttpURLConnection  con = (HttpURLConnection ) obj.openConnection();
@@ -154,17 +155,10 @@ public static HashMap<String, Integer> hssort(HashMap<String, Integer> unsortMap
         sortedMap.put(entry.getKey(), entry.getValue());
     return sortedMap;
 }
-public String[] insert_words(HashMap<String,Integer> words, int cat_id, int a_id)
+public String[] insert_words(HashMap<String,Integer> words, int cat_id, int a_id, HashMap<String,String> stop_words)
 {
 	String[] arr = new String[2];
 	String new_words = "";
-	HashMap<String,String> stop_words=new HashMap<String,String>();
-	try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/remove_words.txt"))) {
-	    String line;
-	    while ((line = br.readLine()) != null) {
-	    	stop_words.put(line,"Yes");
-	    }
-	}catch(Exception e){}
 	
 	String ins_sql = "INSERT into word_list (category_id,word,count,articles) VALUES ";
 	for (Map.Entry m:words.entrySet())
@@ -222,7 +216,7 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 	File file ;
 	int maxFileSize = 5000 * 1024;
 	int maxMemSize = 5000 * 1024;
-
+	
 	String contentType = request.getContentType();
 	if ((contentType.indexOf("multipart/form-data") >= 0)) {
 	
@@ -265,7 +259,7 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 	   response.sendRedirect("upload.jsp");
 	}
 	
-		
+	txt = encode(txt);
 	//Save file
 	/* try {
 		File file_2 = new File(fpath);
@@ -275,7 +269,9 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 		fileWriter.close(); 
 	}
 	catch (IOException e)
-	{ e.printStackTrace(); }  */
+	{ e.printStackTrace(); } */  
+	txt = decode(txt);
+	//out.println("<br/><br/><br/><br/><br/><div class=\"col-sm-12\">");
 	
 	//Algo
 	int max_id = 0;
@@ -316,7 +312,7 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 		
 		String s = txt.toLowerCase();
 		s = s.replaceAll("[^a-z0-9 ]", "");
-		
+			
 		while(s.indexOf("  ")>-1)
 		{
 			s=s.replace("  "," ");
@@ -330,20 +326,24 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 			String[] str = s.split("\\s");	
 			for(String w:str)
 			{  	
-				w1 = hm.get(w);
-				if(w1 != null)
+				if(is_clean(w,stop_words))
 				{
-					w1.cnt += 1;
-					hm.put(w, new WordDetails(new Integer(w1.word_id), new Integer(w1.cat_id),new Integer(w1.cnt)));
-				}
-				else
-				{
-					if(extra_words.get(w) == null)
-						extra_words.put(w,1);
+					//out.println(w+"<br/>");
+					w1 = hm.get(w);
+					if(w1 != null)
+					{
+						w1.cnt += 1;
+						hm.put(w, new WordDetails(new Integer(w1.word_id), new Integer(w1.cat_id),new Integer(w1.cnt)));
+					}
 					else
 					{
-						e_cnt = extra_words.get(w);
-						extra_words.put(w,e_cnt+1);
+						if(extra_words.get(w) == null)
+							extra_words.put(w,1);
+						else
+						{
+							e_cnt = extra_words.get(w);
+							extra_words.put(w,e_cnt+1);
+						}
 					}
 				}
 			}
@@ -361,9 +361,10 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 					w_cnt = word_cnt.get(tmp_id);
 					f_cnt = freq_cnt.get(tmp_id);
 					w_cnt += 1;
-					f_cnt += wd.cnt;
+					f_cnt += wd.cnt-1;
 					word_cnt.put(tmp_id,w_cnt);
-					freq_cnt.put(tmp_id,f_cnt);
+					if(wd.cnt > 1)
+						freq_cnt.put(tmp_id,f_cnt);
 
 					hm1.put((String) m.getKey(), wd.cnt);
 
@@ -406,6 +407,9 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 		DecimalFormat df = new DecimalFormat("#.##");
 		df.setRoundingMode(RoundingMode.CEILING);
 		Double percent;
+		boolean debug = false;
+		if(debug)
+			return;
 %>
 <div id="main_div">
 	<div class="col-md-10 col-md-offset-1">
@@ -594,13 +598,12 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 					}
 					//stmt.executeUpdate("INSERT into articles(id,title,name,category_id,score,view_count,time_count,review_score,tags,s_tags,others) VALUES ("+id+",'"+title+"','"+name+"',"+max_id+",'"+df.format(max_percent)+"','0','0','0',\""+tags+"\",'"+s_tags+"','"+others+"')");
 				%>
-					
 		   		</div>
 		   </div>
 		</div>
 	</div>
 	<% 
-		String[] arr = insert_words(extra_words,max_id,id);
+		String[] arr = insert_words(extra_words,max_id,id, stop_words);
 		//stmt.executeUpdate(arr[0]);
 		if(arr[1].length() > 0)
 		{

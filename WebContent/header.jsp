@@ -1,6 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@include file="settings.jsp" %>
+<%	
+	HashMap<String,String> stop_words=new HashMap<String,String>();
+	String js_var = "";
+	try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/remove_words.txt"))) {
+	    String line;
+	    
+	    while ((line = br.readLine()) != null) {
+	    	stop_words.put(line,"Yes");
+	    	js_var += "'"+StringEscapeUtils.escapeEcmaScript(line)+"',";
+	    }
+	    js_var = js_var.substring(0,js_var.length()-1);
+	}catch(Exception e){}
+%>
+<script type="text/javascript">
+	var stop_words = [<%= js_var%>];
+</script>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>

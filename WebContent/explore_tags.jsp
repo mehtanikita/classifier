@@ -67,18 +67,21 @@
 					title = r2.getString("title");
 					a_name = r2.getString("name");
 					r_score = r2.getString("review_score");
-					s_tags = r2.getString("s_tags");
-					s_tags = s_tags.trim();
-					s_tags = s_tags.replace(s,"");
-					s_tags = s_tags.replace(",,",",");
-					String[] tags = {};
 					time_when = r2.getString("time_when");
+					
+					s_tags = r.getString("s_tags");
+					s_tags = s_tags.trim();
+					String[] t_tags = s_tags.split(",");
+					s_tags = "";
+					for(String t : t_tags)
+					{
+						if(t.indexOf(s) == -1)
+							s_tags += t+",";
+					}
+					String[] tags = {};
 					if(s_tags.length() > 0)
 					{
-						if(s_tags.charAt(0) == ',')
-							s_tags = s_tags.substring(1,s_tags.length());
-						if(s_tags.charAt(s_tags.length()-1) == ',')
-							s_tags = s_tags.substring(0,s_tags.length()-1);
+						s_tags = s_tags.substring(0,s_tags.length()-1);
 						tags = s_tags.split(",");
 					}
 					
@@ -90,7 +93,7 @@
 					
 					String str = "";
 					String tmp_str = "";
-					String main_str = new String(data, "UTF-8").replaceAll("[^\\x00-\\x7F]", "");
+					String main_str = decode(new String(data, "UTF-8"));
 					String rf_str = main_str.toLowerCase();
 					int lastIndex = 0, tmp_index = 0;
 					int count = 0,index_1 = 0, index_2 = 0, index_3 = 0;
@@ -98,6 +101,8 @@
 					String str_2 = "";
 					while((lastIndex != -1) && (str.length() < no_of_chars))
 					{
+						if(stop_words.get(s) != null)
+							continue;
 					    lastIndex = rf_str.indexOf(s,lastIndex);
 					    
 					    if(lastIndex != -1)
@@ -154,8 +159,6 @@
 					}
 					if(str.length() < no_of_chars)
 						str += main_str.substring(0,no_of_chars - str.length()) + "...";
-					str = str.replaceAll("[^\\x00-\\x7F]", "");
-					str = str.replace("?", "");
 			%>
 				<div class="col-md-12">
 					<div class="box box-primary">
@@ -232,8 +235,11 @@
 				var regex = new RegExp(key,"gi");
 				$(".result_str").each(function()
 				{
-					tmp_txt = $(this).html().replace(regex, '<strong>$&</strong>');
-					$(this).html(tmp_txt);
+					if(stop_words.indexOf(key) == -1)
+					{
+						tmp_txt = $(this).html().replace(regex, '<strong>$&</strong>');
+						$(this).html(tmp_txt);
+					}
 				});
 			</script>
 			</div>

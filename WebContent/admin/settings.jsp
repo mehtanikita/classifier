@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="java.sql.*,java.util.*,java.io.*,java.util.Date,java.text.*" %>
+<%@ page import="java.sql.*,java.util.*,java.io.*,java.util.Date,java.text.*,org.apache.commons.lang3.StringEscapeUtils" %>
 <%
 	Class.forName("com.mysql.jdbc.Driver");
 	Connection c = DriverManager.getConnection("jdbc:mysql://localhost/test","root","");
@@ -62,6 +62,14 @@
 			else
 				return (diff/31104000) + " years ago";
 		}
+	}
+	public static String encode(String s)
+	{
+		return StringEscapeUtils.escapeJava(s);
+	}
+	public static String decode(String s)
+	{
+		return StringEscapeUtils.unescapeJava(s);
 	}
 %>
 <%

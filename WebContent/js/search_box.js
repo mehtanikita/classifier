@@ -76,7 +76,7 @@ $(document).ready(function()
 			{
 				list_ind = 1;
 			}
-			
+			console.log(list_ind);
 			goto_select(list_ind);
 		}
 		else if(event.which == "38")
