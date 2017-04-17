@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row">
                 <div id="footer" class="col-lg-12">
-                    <ul class="list-inline">
+                    <!-- <ul class="list-inline">
                         <li>
                             <a href="index.jsp">Home</a>
                         </li>
@@ -20,7 +20,7 @@
                         <li>
                             <a href="index.jsp#contact">Contact</a>
                         </li>
-                    </ul>
+                    </ul> -->
                     <p class="copyright text-muted small">Copyright &copy; Classifier 2017. All Rights Reserved</p>
                     <button type="button" class="btn btn-primary round" id="scrollToTop" title="Scroll to top">
 				        <span class="glyphicon glyphicon-chevron-up"></span>

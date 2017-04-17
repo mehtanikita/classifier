@@ -12,7 +12,7 @@
 public String get_title(String txt, int len)
 {
 	if(true)
-		return "Title";
+		return "title";
 	String USER_AGENT = "Mozilla/5.0";
 	String tmp_title = "";
 	
@@ -27,7 +27,7 @@ public String get_title(String txt, int len)
 		con.setRequestMethod("POST");
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-
+		
 		String urlParameters = "text="+text+"&maxsentences=1";
 
 		// Send post request
@@ -36,12 +36,12 @@ public String get_title(String txt, int len)
 		wr.writeBytes(urlParameters);
 		wr.flush();
 		wr.close();
-
+		
 		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(con.getInputStream()));
 		String inputLine;
 		StringBuffer resp = new StringBuffer();
-
+		
 		while ((inputLine = in.readLine()) != null) {
 			resp.append(inputLine);
 		}

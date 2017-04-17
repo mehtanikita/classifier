@@ -27,7 +27,7 @@
     <meta name="author" content="">
 
 	<title>Classifier</title>
-	<link rel="shortcut icon" type="image/png" href="favicon.png"/>
+	<link rel="shortcut icon" type="image/png" href="favicon.jpg"/>
 	<link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="admin/resources/css/font-awesome.css">
 	<link rel="stylesheet" type="text/css" href="admin/resources/css/ionicons.css">
@@ -63,9 +63,9 @@
                     <li>
                         <a href="upload.jsp">Upload</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="index.jsp#contact">Contact</a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

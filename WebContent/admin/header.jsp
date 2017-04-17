@@ -54,7 +54,7 @@
 	<div id="wrapper">
 		<header class="main-header"  style="position: fixed; width: 100%">
 			<a href="javascript:void(0)" class="logo"> <span
-				class="logo-mini"><b>Cl</b></span> <span class="logo-lg"><b>Classifier</b></span>
+				class="logo-mini"><b>C</b></span> <span class="logo-lg"><b>Classifier</b></span>
 			</a>
 			<nav class="navbar navbar-static-top" role="navigation">
 				<a href="#" class="sidebar-toggle" data-toggle="offcanvas"
@@ -62,96 +62,18 @@
 				</a>
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
-						<!-- Messages: style can be found in dropdown.less-->
-						<li class="dropdown messages-menu">
-								<a href="#" id="tips_btn"
-									class="dropdown-toggle" data-toggle="dropdown"> <i
-										class="fa fa-lightbulb-o"></i>
-										<span class="label label-success">5</span>
-								</a>
-							<ul class="dropdown-menu">
-								<li class="header">You have 5 new tips</li>
-								<li>
-									<!-- inner menu: contains the actual data -->
-									<ul class="menu">
-										<li>
-											<!-- start message --> <a>
-												<div class="pull-left">
-													<i class="fa fa-lightbulb-o"></i>
-												</div>
-												<h4>
-													Temp
-												</h4>
-										</a>
-										</li>
-										<!-- end message -->
-									</ul>
-								</li>
-								<li class="footer"><a href="tips/view">See All tips.</a></li>
-							</ul></li>
-						<!-- Notifications: style can be found in dropdown.less -->
-						<li class="dropdown notifications-menu">
-								<a href="#" id="notif_btn"
-									class="dropdown-toggle" data-toggle="dropdown"> <i
-										class="fa fa-bell-o"></i>
-										<span class="label label-warning">3</span>
-								</a>
-							<ul class="dropdown-menu">
-								<li class="header">You have 8 new notification(s).</li>
-								<li>
-									<!-- inner menu: contains the actual data -->
-									<ul class="menu">
-										<li>
-											<a href="user/daily_data?id=1"> <i class="fa fa-users text-aqua"></i>
-												Update your daily progress!
-											</a>
-										</li>
-									</ul>
-								</li>
-							</ul></li>
-						<!-- Tasks: style can be found in dropdown.less -->
-						<li class="dropdown tasks-menu"><a href="#" id="friend_req_btn"
-							class="dropdown-toggle" data-toggle="dropdown"> <i
-								class="fa fa-user-plus"></i> 
-								<span class="label label-danger">3</span>
-						</a>
-							<ul class="dropdown-menu">
-								<li class="header">You have 3 new friend request(s).</li>
-								<li>
-									<!-- inner menu: contains the actual data -->
-									<ul class="menu">
-										<div class="confirm_friend_li">
-											<div class="col-sm-12">
-												<p><strong>Vortex</strong> sent you a friend request.</p>
-											</div>
-											<div class="col-sm-12">
-												<div class="col-sm-5">
-													<button class="btn btn-primary confirm_friend">
-														<i class="fa fa-check"></i> Accept
-													</button>
-												</div>
-												<div class="col-sm-2"></div>
-												<div class="col-sm-5">
-													<button class="btn btn-danger decline_friend">
-														<i class="fa fa-times"></i> Reject
-													</button>
-												</div>
-											</div>
-										</div>
-									</ul>
-								</li>
-							</ul></li>
+						
 						<!-- User Account: style can be found in dropdown.less -->
 						<li class="dropdown user user-menu"><a href="#"
 							class="dropdown-toggle" data-toggle="dropdown"> <img
-								src="admin/resources/others/dist/img/user2-160x160.jpg"
+								src="admin.png"
 								class="user-image" alt="User Image"> <span
 								class="hidden-xs">Classifier</span>
 						</a>
 							<ul class="dropdown-menu">
 								<!-- User image -->
 								<li class="user-header"><img
-									src="admin/resources/others/dist/img/user2-160x160.jpg"
+									src="admin.png"
 									class="img-circle" alt="User Image">
 									<p>
 										Classifier
@@ -159,9 +81,6 @@
 								</li>
 								<!-- Menu Footer-->
 								<li class="user-footer">
-									<div class="pull-left">
-										<a href="#" class="btn btn-default btn-flat">Profile</a>
-									</div>
 									<div class="pull-right">
 										<a href="admin/logout.jsp" class="btn btn-default btn-flat">Sign out</a>
 									</div>
