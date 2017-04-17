@@ -3,8 +3,8 @@ tag_weight,Tag Count Weight:15
 score_weight,Score Weight:3
 articles_per_page,Articles Per Page:3
 view_weight,View Count Weight:3
-freq_weight,Category word frequency weight:40
+freq_weight,Category word frequency weight:18
 review_weight,Review Score Weight:10
-record_days,Number of previous days:5
-word_weight,Category word count weight:17
+record_days,Number of previous days:25
+word_weight,Category word count weight:9
 abstract_size,Size of Abstract:420

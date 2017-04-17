@@ -311,7 +311,7 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 		}
 		
 		String s = txt.toLowerCase();
-		s = s.replaceAll("[^a-z0-9 ]", "");
+		s = s.replaceAll("[^a-z0-9 ]", " ");
 			
 		while(s.indexOf("  ")>-1)
 		{
@@ -369,7 +369,7 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 					hm1.put((String) m.getKey(), wd.cnt);
 
 					total_words++;
-					total_freq += wd.cnt;
+					total_freq += wd.cnt-1;
 					
 					update_cnt_sql += "WHEN id = "+wd.word_id+" THEN count + "+wd.cnt+" ";
 					update_article_sql += "WHEN id = "+wd.word_id+" THEN CONCAT(articles,'"+id+",') ";

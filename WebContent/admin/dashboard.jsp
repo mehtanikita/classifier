@@ -177,7 +177,7 @@
                 <input data-slider-id="yellow" var_name="word_weight" data-slider-value="<%=get_value("word_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-handle="round" />
                 
                 <p style="margin-bottom: 10px"><%=get_name("freq_weight",vars) %></p>
-                <input data-slider-id="purple" var_name="freq_weight" data-slider-value="<%=get_value("freq_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="50" data-slider-step="20" data-slider-handle="round" />
+                <input data-slider-id="purple" var_name="freq_weight" data-slider-value="<%=get_value("freq_weight",vars)%>" type="text" class="slider form-control" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-handle="round" />
                 
            </div>
          </div><!-- /.box-body -->

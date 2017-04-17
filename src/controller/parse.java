@@ -1,5 +1,6 @@
 package controller;
 import com.jaunt.*;
+import org.json.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,9 +13,9 @@ public class parse {
 	{
 		boolean debug = true;
 		boolean oxf = false;
-		boolean onelook = false;
-		int category_id = 1;
-		int pages = 5;
+		boolean onelook = true;
+		int category_id = 8;
+		int pages = 1;
 		
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection conn = DriverManager.getConnection ("jdbc:mysql://localhost/test", "root", "");
@@ -74,23 +75,17 @@ public class parse {
 		}
 		else if(onelook)
 		{
-			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=1");
-			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=101");
-			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=201");
-			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=301");
-			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=401");
-			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=501");
-			links.add("http://www.onelook.com/?w=*:crime&ws1=1&first=601");
+			links.add("http://api.onelook.com/words?v=ol_gte3&ml=nature&qe=ml&md=dp&max=1000&k=olthes_r4");
 			List<String> ws = new ArrayList<String>();
 			for(String link : links)
 			{
 				userAgent.visit(link);
-				Elements words = userAgent.doc.findFirst("<table>").nextSiblingElement().findFirst("<table>").nextSiblingElement().nextSiblingElement().findEvery("<td>").findEvery("<a>");
+				JSONArray arr = new JSONArray(userAgent.getSource());
 				String s;
 				
-				for(Element word : words )
+				for (int i = 0; i < arr.length(); i++)
 				{
-					s = refine(word.getText());
+					s = refine(arr.getJSONObject(i).getString("word"));
 					if(is_clean(s,hm))
 					{
 						ws.add(s);
