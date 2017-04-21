@@ -11,24 +11,24 @@
 <%!
 public String get_title(String txt, int len)
 {
-	if(true)
-		return "title";
-	String USER_AGENT = "Mozilla/5.0";
+	String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36";
 	String tmp_title = "";
 	
 	try{
 		String text = URLEncoder.encode(txt, "UTF-8");
 		String url = "http://freesummarizer.com/";
-		
+
 		URL obj = new URL(url);
 		HttpURLConnection  con = (HttpURLConnection ) obj.openConnection();
 
 		//add reuqest header
 		con.setRequestMethod("POST");
 		con.setRequestProperty("User-Agent", USER_AGENT);
-		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+		con.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		//con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 		
-		String urlParameters = "text="+text+"&maxsentences=1";
+		String urlParameters = "text="+text+"&maxsentences=1&maxtopwords=40";
 
 		// Send post request
 		con.setDoOutput(true);
@@ -39,6 +39,7 @@ public String get_title(String txt, int len)
 		
 		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(con.getInputStream()));
+		
 		String inputLine;
 		StringBuffer resp = new StringBuffer();
 		
@@ -97,15 +98,23 @@ public String get_title(String txt, int len)
 		}
 		tmp_title = tmp_title.replaceAll("[^\\w\\s]+", "");
 		tmp_title = tmp_title.trim();
-				
-		String[] remove_words = {"with","at","from","into","during","including","until","against","among","throughout","despite","towards","upon","concerning","of","to","in","for","on","by","about","like","through","over","before","between","after","since","without","under","within","along","following","across","behind","beyond","plus","except","but","up","out","around","down","off","above","near"};
+		
+		HashMap<String,String> stop_words=new HashMap<String,String>();
+		try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/remove_words.txt"))) {
+		    String line;
+		    
+		    while ((line = br.readLine()) != null) {
+		    	stop_words.put(line,"Yes");
+		    }
+		}catch(Exception e){}
+		String[] remove_words = stop_words.keySet().toArray(new String[0]);
 		int l_ind = tmp_title.lastIndexOf(" ");
 		if(in_array(remove_words, tmp_title.substring(l_ind+1,tmp_title.length())))
 		{
 			tmp_title = tmp_title.substring(0,l_ind);
 		}
 	}
-	catch(Exception e){}
+	catch(Exception e){e.printStackTrace(); }
 	return tmp_title;
 }
 public boolean in_array(String[] arr, String targetValue)
@@ -261,7 +270,7 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 	
 	txt = encode(txt);
 	//Save file
-	/* try {
+	try {
 		File file_2 = new File(fpath);
 		FileWriter fileWriter = new FileWriter(file_2);
 		fileWriter.write(txt);
@@ -269,7 +278,7 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 		fileWriter.close(); 
 	}
 	catch (IOException e)
-	{ e.printStackTrace(); } */  
+	{ e.printStackTrace(); }   
 	txt = decode(txt);
 	//out.println("<br/><br/><br/><br/><br/><div class=\"col-sm-12\">");
 	
@@ -380,8 +389,8 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 			update_article_sql += " ELSE articles END);";
 			if(tmp_for_cnt > 0)
 			{
-				//stmt.executeUpdate(update_cnt_sql);
-				//stmt.executeUpdate(update_article_sql);
+				stmt.executeUpdate(update_cnt_sql);
+				stmt.executeUpdate(update_article_sql);
 			}
 		}
 		
@@ -589,14 +598,14 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 						count--;
 					}
 					tag_sql = tag_sql.substring(0,tag_sql.length()-1);
-					//stmt.executeUpdate(tag_sql);
+					stmt.executeUpdate(tag_sql);
 					if(tags.length() > 0)
 					{
 						tags = tags.substring(0, tags.length()-1);
 						tags.replaceAll("\'","\\\\'");
 						s_tags = s_tags.substring(0, s_tags.length()-1);
 					}
-					//stmt.executeUpdate("INSERT into articles(id,title,name,category_id,score,view_count,time_count,review_score,tags,s_tags,others) VALUES ("+id+",'"+title+"','"+name+"',"+max_id+",'"+df.format(max_percent)+"','0','0','0',\""+tags+"\",'"+s_tags+"','"+others+"')");
+					stmt.executeUpdate("INSERT into articles(id,title,name,category_id,score,view_count,time_count,review_score,tags,s_tags,others) VALUES ("+id+",'"+title+"','"+name+"',"+max_id+",'"+df.format(max_percent)+"','0','0','0',\""+tags+"\",'"+s_tags+"','"+others+"')");
 				%>
 		   		</div>
 		   </div>
@@ -604,7 +613,7 @@ public static boolean is_clean(String s,HashMap<String,String> hm)
 	</div>
 	<% 
 		String[] arr = insert_words(extra_words,max_id,id, stop_words);
-		//stmt.executeUpdate(arr[0]);
+		stmt.executeUpdate(arr[0]);
 		if(arr[1].length() > 0)
 		{
 			String[] new_arr = arr[1].split(",");

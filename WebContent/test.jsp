@@ -6,7 +6,7 @@
 	Class.forName("com.mysql.jdbc.Driver");
 	Connection c = DriverManager.getConnection("jdbc:mysql://localhost/newsbee","root","");
 	Statement stmt = c.createStatement();
-	String sql = "SELECT * FROM headlines JOIN news on headlines.id = news.headline_id WHERE category = 'business'";
+	String sql = "SELECT * FROM headlines JOIN news on headlines.id = news.headline_id WHERE category = 'entertainment'";
 	ResultSet r = stmt.executeQuery(sql);
 	while(r.next()){
 %>

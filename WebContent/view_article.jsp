@@ -76,7 +76,7 @@
 			int total_time= r.getInt("total_time");
 			
 			String order_logic = " ORDER BY (score * "+score_weight+")+((view_count*100/"+total_views+")*"+view_weight+")+((time_count*100/"+total_time+")*"+time_weight+")+(review_score*"+review_weight+") DESC";
-			String r_sql = "SELECT * FROM articles WHERE id IN (SELECT article_id FROM search WHERE search_string IN (SELECT search_string FROM `search` WHERE article_id = "+a_id+") AND article_id != "+a_id+") UNION SELECT * FROM articles WHERE id IN (SELECT article_id FROM tags WHERE name IN ("+q_tags+")) and id != "+a_id+" UNION SELECT * FROM articles WHERE category_id = " + cat_id + " AND id != "+a_id + order_logic + "";
+			String r_sql = "SELECT * FROM articles WHERE id IN (SELECT article_id FROM search WHERE search_string IN (SELECT search_string FROM `search` WHERE article_id = "+a_id+") AND article_id != "+a_id+") UNION SELECT * FROM articles WHERE id IN (SELECT article_id FROM tags WHERE name IN ("+q_tags+")) and id != "+a_id+" UNION SELECT * FROM articles WHERE category_id = " + cat_id + " AND id != "+a_id + order_logic + " LIMIT 6";
 			r = stmt.executeQuery(r_sql);
 			String r_title;
 			int max_title_len = 100;

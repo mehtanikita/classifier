@@ -3,7 +3,7 @@
 <%@ page import="java.sql.*,java.util.*,java.io.*,org.apache.commons.lang3.StringEscapeUtils" %>
 <%
 	Class.forName("com.mysql.jdbc.Driver");
-	Connection c = DriverManager.getConnection("jdbc:mysql://localhost/test","root","");
+	Connection c = DriverManager.getConnection("jdbc:mysql://localhost/classifier","root","");
 	Statement stmt = c.createStatement();
 %>
 <%!
